@@ -1,0 +1,28 @@
+{
+    "items": [
+      {
+        "id": 1,
+        "name": "Geo Data",
+        "category": "geolocation",
+        "image": "ipfs_link",
+        "price": "2",
+        "information": "this is default information"
+      },
+      {
+        "id": 2,
+        "name": "Word Data",
+        "category": "word",
+        "image": "ipfs_link",
+        "price": "5",
+        "information": "this is default information 2"
+      },
+      {
+        "id": 3,
+        "name": "Word Data",
+        "category": "word",
+        "image": "ipfs_link",
+        "price": "0.3",
+        "information": "this is default information 3"
+      }
+    ]
+  }
