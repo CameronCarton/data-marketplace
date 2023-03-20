@@ -24,10 +24,12 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
                     </div>
                     <div class="item-overview2">
                         {item.name}
+                        <p>{ethers.utils.formatUnits(item.price.toString(), 'ether')} ETH</p>
+                        <p>{item.category}</p>
                     </div>
                     <div class="item-overview3">
                         Item Information
-                        <p> </p>
+                        <p>{item.information}</p>
                     </div>
                 </div>
                 <div class="item-order">

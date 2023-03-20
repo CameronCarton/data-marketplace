@@ -51,13 +51,13 @@ function App() {
     for (var i=0; i<itemsLength; i++){
       const item = await dataMarket.items(i+1)
       if(item.name != ""){
-        items.push(item)
+        items.push(item);
       }
     }
 
-    setItems(items)
+    setItems(items);
 
-    console.log(items)
+    console.log(items);
   }
 
   useEffect(() => {
@@ -67,7 +67,7 @@ function App() {
   return (
     <div>
       <Navigation account={account} setAccount={setAccount}/>
-      <Section items={items} togglePop={togglePop} togglePop2={togglePop2}/>
+      <Section account={account} items={items} togglePop={togglePop} togglePop2={togglePop2}/>
 
       {toggle &&(
         <ItemPage item={item} provider={provider} account={account} dataMarket={dataMarket} togglePop={togglePop} />

@@ -1,24 +1,42 @@
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
 
-import { create as ipfsHttpClient } from 'ipfs-http-client'
+import { create} from "ipfs-http-client";
+import Papa from 'papaparse';
 
 const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
-    const [price, setPrice] = useState(0.000000000000000000);
+    const [price, setPrice] = useState(0.0000);
     const [categoryToggle, setCategoryToggle] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [imageFile,setImageFile] = useState(null);
-    
+    const [dataFile,setDataFile] = useState(null);
+    const [data, setData] = useState([]);
+
+    //ipfs
+    const projectId = "2M3RsTdrt2xMd2SUInpHJf7JDlh";
+    const projectSecret = "37549890a23ea362509f8517bf1bc14c";
+    const authorization = "Basic " + btoa(projectId + ":" + projectSecret);
+    const ipfs = create({
+      url: "https://ipfs.infura.io:5001/api/v0",
+      headers:{
+        authorization
+      }
+    })
+
+
     useEffect(() => {
       const fileSelector = document.getElementById('file-selector');
+      const fileSelector2 = document.getElementById('file-selector2');
       const imageContainer = document.getElementById('item-image');
-  
+      
+      //selecting image file
       fileSelector.addEventListener('change', async (event) => {
         const file = event.target.files[0];
         await setImageFile(file);
 
+        //displaying image
         const reader = new FileReader();
-  
+        
         reader.addEventListener('load', (event) => {
           const imageUrl = event.target.result;
           const image = document.createElement('img');
@@ -29,11 +47,28 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
   
         reader.readAsDataURL(file);
       });
+
+      //selecting data file
+      fileSelector2.addEventListener('change', async (event) => {
+        const file2 = event.target.files[0];
+        await setDataFile(file2);
+
+        //displaying data
+        const reader = new FileReader();
+        
+        reader.addEventListener('load', (event) => {
+            const csv = Papa.parse(event.target.result, { header: true });
+            const parsedData = csv?.data;
+            const columns = Object.keys(parsedData[0]);
+            setData(columns);
+        });
+        reader.readAsText(file2);
+      });
     }, []);
   
     const handlePriceChange = (event) => {
       const inputValue = parseFloat(event.target.value);
-      if (!isNaN(inputValue) && inputValue >= 0.000000000000000001) {
+      if (!isNaN(inputValue) && inputValue >= 0.0001) {
         setPrice(inputValue);
       }
     };
@@ -52,42 +87,52 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
     //listing item
     const listItem = async () => {
 
-      //const file = imageFile;
-      //const imageLink = await uploadFileToIPFS(file)
-      console.log("file uploaded at: " + imageLink);
+      const imageLink = await uploadFileToIPFS(imageFile)
+      console.log("image file uploaded at: " + imageLink);
+
+      const dataLink = await uploadFileToIPFS(dataFile)
+      console.log("data file uploaded at: " + dataLink);
 
       const signer = await provider.getSigner()
       const transaction = await dataMarket.connect(signer).list(
         items.length +1,
         inputName,
-        "imageLink",
+        imageLink,
         selectedCategory,
         ethers.utils.parseUnits(price.toString(), 'ether'),
         inputInfo,
+        inputTags,
+        dataLink,
       )
       await transaction.wait()
       console.log("listed item");
     }
 
     //ipfs
-    //this is not working, come back to this
-    async function uploadFileToIPFS(file) {
-      const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
-    
-      const fileAdded = await client.add(file);
-      const ipfsLink = `https://ipfs.io/ipfs/${fileAdded.cid.string}`;
-    
-      return ipfsLink;
-    }
+    const uploadFileToIPFS = async (file) => {
+      console.log("beginning upload to ipfs...")
+  
+      const fileLink = await ipfs.add(file);
+
+      console.log("finished upload to ipfs!")
+
+      return "https://ipfs.io/ipfs/"+fileLink.path;
+    };
 
     //handle text input
     const [inputName, setInputName] = useState('');
     const nameChange = (event) => {
       setInputName(event.target.value);
     }
+    const [inputInfo, setInputInfo] = useState('');
+    const infoChange = (event) => {
+      setInputInfo(event.target.value);
+    }
+    const [inputTags, setInputTags] = useState('');
+    const tagsChange = (event) => {
+      setInputTags(event.target.value);
+    }
 
-
-  
     return (
       <div class="itemPage">
         <div class="item-details">
@@ -108,6 +153,14 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
                   Data-
                   <input type="file" id="file-selector2" accept="text/*" />
                   <label htmlFor="file-selector" class="button"></label>
+
+                  {dataFile ? (
+                  <div>
+                      {data.map((col,idx) => <div key={idx}>{col}</div>)}
+                  </div>
+                  ):(
+                    <p>null</p>
+                  )}
                 </div>
               </div>
                     
@@ -121,8 +174,8 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
                 <input
                   class="item-text-box-price"
                   type="number"
-                  step="0.000000000000000001"
-                  min="0.000000000000000001"
+                  step="0.0001"
+                  min="0.0001"
                   value={price}
                   onChange={handlePriceChange}
                 />
@@ -145,10 +198,10 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
                     </div>
                 </div>
                     <div class="item-text-box2-tags">Item Tags 
-                        <textarea class="item-text-box-tags" rows="2"></textarea>
+                        <textarea class="item-text-box-tags" rows="2" onChange={tagsChange}></textarea>
                     </div>
                     <div class="item-text-box2-info">Information
-                        <textarea class="item-text-box-info" rows="2"></textarea>
+                        <textarea class="item-text-box-info" rows="2" onChange={infoChange}></textarea>
                     </div>
                 </div>
 

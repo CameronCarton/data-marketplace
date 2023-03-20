@@ -21,6 +21,8 @@ contract DataMarket{
         string category;
         uint256 price;
         string information;
+        string tags;
+        string data;
     }
 
     struct Order{
@@ -40,10 +42,12 @@ contract DataMarket{
         string memory _image,
         string memory _category,
         uint256 _price,
-        string memory _information
+        string memory _information,
+        string memory _tags,
+        string memory _data
     ) public mustBeOwner{
         //create Item
-        Item memory item = Item(_id,_name,_image,_category,_price,_information);
+        Item memory item = Item(_id,_name,_image,_category,_price,_information,_tags,_data);
 
         //save Item
         items[_id] = item;

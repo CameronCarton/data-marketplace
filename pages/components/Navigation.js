@@ -23,10 +23,9 @@ const connectWallet = async () => {
                 <a href="https://nextjs.org" class="navbar-links">About</a>
                 </li>
                     {account ? (
-                        <div id="wallet-container">
-                            <button id="connect-wallet-button">{account.slice(0,6) + '...' + account.slice(38,42)}</button>
-                            <div id="message-container"></div>
-                        </div>
+                        <li class="navbar-item">
+                        <a href="https://nextjs.org" class="navbar-links">Account</a>
+                        </li>
                     ):(
                         <div id="wallet-container">
                             <button id="connect-wallet-button" onClick={connectWallet}>Connect Wallet</button>

@@ -50,11 +50,11 @@
     #navbar-logo {
       margin: 35px;
       height: 70px;
-      width: 200px;
+      width: 190px;
       justify-content: left;
       align-items: center;
       border-radius: 70px;
-      background-image: '/images/dataMart_logo.png';
+      background-image: url("https://ipfs.io/ipfs/QmYfFBKZhmAWa1GrhTz2Te4GkzcZEoFzZBSvHnWWf8y35y");
       background-size: contain;
       background-repeat: no-repeat;
       position: absolute;
@@ -65,7 +65,7 @@
     height: 0px;
     justify-content: center;
     padding-left: 10px;
-    padding-top: 10px;
+    padding-top: 15px;
     align-items: center;
   }
 
@@ -97,18 +97,18 @@
     padding: 40px 30px 20px 20px;
     height: 100%;
     border-radius: 32px;
-    border: 2px solid rgb(179, 179, 179);
+    border: 4px solid rgb(179, 179, 179);
     font-size:1.2rem;
   }
   
   .navbar-links:hover {
-    color: #00ff73;
-    border: 4px solid #00ff73;
+    color: #ffffff;
+    border: 4px solid #ffffff;
     transition: all 0.5s ease;
   }
   #connect-wallet-button:hover {
     color: #0077ff;
-    border: 2px solid #0077ff;
+    border: 4px solid #0077ff;
     transition: all 0.5s ease;
   }
   }
@@ -119,10 +119,11 @@
       margin:15px;
       top: 0px;
       height: 70px;
-      width: 200px;
+      width: 190px;
       justify-content: center;
       align-items: center;
-      background-image: url('/images/dataMart_logo.png');
+      border-radius: 70px;
+      background-image: url("https://ipfs.io/ipfs/QmYfFBKZhmAWa1GrhTz2Te4GkzcZEoFzZBSvHnWWf8y35y");
       background-size: contain;
       background-repeat: no-repeat;
       position: absolute;
@@ -167,18 +168,18 @@
     padding: 30px 10px 10px 10px;
     height: 100%;
     border-radius: 32px;
-    border: 2px solid rgb(179, 179, 179);
+    border: 4px solid rgb(179, 179, 179);
     font-size:2.2vw;
   }
   
   .navbar-links:hover {
-    color: #00ff73;
-    border: 4px solid #00ff73;
+    color: #ffffff;
+    border: 4px solid #ffffff;
     transition: all 0.5s ease;
   }
   #connect-wallet-button:hover {
     color: #0077ff;
-    border: 2px solid #0077ff;
+    border: 4px solid #0077ff;
     transition: all 0.5s ease;
   }
 
@@ -213,7 +214,8 @@
       width: 72px;
       justify-content: center;
       align-items: center;
-      background-image: url('/images/dataMart_logo2.png');
+      border-radius: 70px;
+      background-image: url("https://ipfs.io/ipfs/QmVnPigejto1aXhXcqATLgUWjrg8ztkRv2CjEKvzY3zmKT");
       background-size: contain;
       background-repeat: no-repeat;
       position: absolute;
@@ -342,25 +344,214 @@
   .filter-container{
     margin-top: 8vh;
     left: 1%;
-    height: 30vh;
     width: 13%;
     justify-content: left;
     align-items: left;
-    background: rgba(46, 46, 46, 0.4);
-    border-radius: 32px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: left;
+    font-size: 1.5rem;
+    background: rgba(46, 46, 46, 1);
+    border-radius: 8px;
     position: absolute;
+  }
+
+  .filter-containerText{
+    width: 94%;
+    left: 3%;
+    justify-content: left;
+    align-items: left;
+    padding-left: 10px;
+    text-align: left;
+    font-size: 1.5rem;
+    background: rgba(46, 46, 46, 1);
+    border: 2px solid rgba(255, 255, 255,0);
+    border-radius: 8px;
+    position: relative;
+  }
+
+  .filter-container2{
+    margin-top: 3%;
+    width: 94%;
+    left: 3%;
+    justify-content: left;
+    align-items: left;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 5%;
+    padding-right:5%;
+    text-align: left;
+    font-size: 1.2rem;
+    background: rgba(46, 46, 46, 1);
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 8px;
+    position: relative;
+  }
+  .filter-container3{
+    display:flex;
+    width: 90%;
+    justify-content: left;
+    align-items: left;
+    text-align: left;
+    margin-bottom:10px;
+    font-size: 1.2rem;
+    background: rgba(46, 46, 46, 0);
+    border: 2px solid rgba(255, 255, 255,0);
+    border-radius: 8px;
+    position: relative;
+  }
+  .filter-container4{
+    width: 100%;
+    display:flex;
+    justify-content: left;
+    align-items: left;
+    text-align: left;
+    font-size: 1.2rem;
+    background: rgba(46, 46, 46, 0);
+    border: 2px solid rgba(255, 255, 255,0);
+    border-radius: 8px;
+    position: relative;
+  }
+  .filter-container5{
+    justify-content: left;
+    align-items: left;
+    text-align: left;
+    font-size: 1.2rem;
+    background: rgba(46, 46, 46, 0);
+    position: relative;
+  }
+  .filter-button{
+    margin-bottom:5px;
+    justify-content: left;
+    align-items: left;
+    width: 90%;
+    padding: 3px;
+    text-align: center;
+    margin-left:10%;
+    font-size: 0.9rem;
+    border-radius: 16px;
+    background: rgb(46, 46, 46);
+    border: 1px solid rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+    position: relative;
+  }
+  .filter-button:hover {
+    background: rgb(124, 124, 124);
+    border: 1px solid rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+    transition: all 0.5s ease;
+  }
+  .filter-button.selected {
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(255, 255, 255);
+    color: rgb(46, 46, 46);
+  }
+  .apply-button{
+    margin-left:50%;
+    margin-top:10px;
+    margin-bottom:5px;
+    justify-content: left;
+    align-items: left;
+    width: 40%;
+    padding: 3px;
+    text-align: center;
+    font-size: 0.9rem;
+    border-radius: 16px;
+    background: rgb(46, 46, 46);
+    border: 1px solid rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+    position: relative;
+  }
+  .apply-button:hover {
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(255, 255, 255);
+    color: rgb(46, 46, 46);
+    transition: all 0.5s ease;
   }
 
   .profile-container{
     margin-top: 8vh;
     right: 1%;
-    height: 30vh;
+    padding: 20px;
     width: 13%;
-    justify-content: right;
-    align-items: right;
-    background: rgba(46, 46, 46, 0.4);
-    border-radius: 32px;
+    justify-content: center;
+    align-items: center;
+    background: rgba(46, 46, 46, 1);
+    border-radius: 8px;
     position: absolute;
+  }
+  .profile-container2{
+    top: 20px;
+    width: 100%;
+    padding-bottom: 20px;
+    justify-content: bottom;
+    background: rgba(138, 62, 62,0);
+    border-radius: 8px;
+    position: relative;
+  }
+  .profile-containerImage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(138, 62, 62,0);
+    position: relative;
+  }
+
+  .profile-image {
+    width: 120px;
+    height: 120px;
+    top:20px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100px;
+    border: 0px solid rgb(179, 179, 179);
+    background: rgb(179, 179, 179);
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: relative;
+    color: #A56FF2;
+  }
+  
+  .profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 100px;
+  }
+
+  .profile-button{
+    margin-top:5px;
+    width: 80%;
+    left: 10%;
+    justify-content: left;
+    align-items: left;
+    padding: 5px;
+    text-align: center;
+    font-size: 1.2rem;
+    background: rgba(46, 46, 46, 1);
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 8px;
+    position: relative;
+  }
+
+  .profile-id-display{
+    width: 94%;
+    left: 3%;
+    justify-content: left;
+    align-items: left;
+    padding: 5px;
+    text-align: center;
+    font-size: 1rem;
+    background: rgba(46, 46, 46, 1);
+    border-radius: 8px;
+    position: relative;
+  }
+
+  .profile-button:hover{
+    color: rgb(0,0,0);
+    background: rgb(255, 255, 255);
+    border: 2px solid rgb(255, 255, 255);
+    transition: all 0.5s ease;
   }
 
 .grid-container {
@@ -368,13 +559,13 @@
   display: flex; 
   flex-wrap: wrap; 
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: left;
   margin: 0 auto;
   top:8vh;
   width: 70%;
   color: rgba(0,0,0,0);
   background: rgba(46, 46, 46, 0.4);
-  border-radius: 32px;
+  border-radius: 8px;
   position: relative;
 }
 
@@ -386,7 +577,7 @@
   justify-content: center;
   align-items: center;
   background: rgb(46, 46, 46);
-  border-radius: 16px;
+  border-radius: 8px;
   position: relative;
 }
 
@@ -437,18 +628,71 @@
   color: #ffffff;
   height: 100%;
   width: 100%;
-  border-radius: 16px;
-  border: 4px solid rgba(255, 255, 255,0);
+  border-radius: 8px;
+  border: 4px solid rgb(46, 46, 46);
   background: rgba(0, 0, 0, 0);
+  justify-content: bottom;
   top:0;
   left:0;
   position: absolute;
 }
 
+.listing-links2 {
+  color: #ffffff;
+  height: 30%;
+  width: 100%;
+  border-radius: 0px;
+  border: 4px solid rgb(46, 46, 46);
+  background: rgb(46, 46, 46);
+  justify-content: bottom;
+  bottom:0;
+  left:0;
+  font-size: 1.2rem;
+  text-align: left;
+  padding-left: 10px;
+  padding-top: 5px;
+  position: absolute;
+}
+
 .listing-links:hover {
+  top:-4;
   background: linear-gradient(to bottom , rgba(0,0,0,0) 0%, rgba(255, 255, 255, 0.5) 100%);
   border: 4px solid rgb(255, 255, 255);
+  transition: all 0.5s ease;
 }
+.listing-price-container{
+  margin-top:5px;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+  display: inline-block;
+  justify-content: center;
+  text-align: center;
+  font-size: 1.2rem;
+  border-radius: 16px;
+  background: rgb(46, 46, 46);
+  border: 2px solid rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
+  position: relative;
+}
+.listing-links:hover > .listing-links2 {
+  color: #464646;
+border: 4px solid rgb(255, 255, 255);
+background: rgb(255, 255, 255);
+transition: all 0.5s ease;
+}
+.listing-links:hover > .listing-container {
+  margin-top: 0px;
+  top: 0px;
+transition: all 0.5s ease;
+}
+.listing-links:hover .listing-price-container {
+  background: rgb(33, 129, 255);
+  border: 2px solid rgb(33, 129, 255);
+  color: rgb(255, 255, 255);
+transition: all 0.5s ease;
+}
+
 
 
 .itemPage {
@@ -757,6 +1001,31 @@
   position:absolute;
 }
 .item-text-box-price:hover {
+  color: #000000;
+  border: 1px solid #000000;
+  background: #ffffff;
+  transition: all 0.5s ease;
+}
+
+.item-text-box-price2 {
+  color: #464646;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 15px 10px 15px 10px;
+  height: 10%;
+  width: 60%;
+  margin-left:90px;
+  margin-right:20px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgb(56, 56, 56);
+  color: rgb(56, 56, 56);
+  font-size: 1.2rem;
+  position:absolute;
+}
+.item-text-box-price2:hover {
   color: #000000;
   border: 1px solid #000000;
   background: #ffffff;

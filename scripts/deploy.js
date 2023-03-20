@@ -30,6 +30,8 @@ async function main() {
       items[i].category,
       tokens(items[i].price),
       items[i].information,
+      items[i].tags,
+      items[i].data,
     )
 
     await transaction.wait()

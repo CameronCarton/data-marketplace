@@ -75,6 +75,16 @@
         "internalType": "string",
         "name": "information",
         "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "tags",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "data",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -110,6 +120,16 @@
       {
         "internalType": "string",
         "name": "_information",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_tags",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_data",
         "type": "string"
       }
     ],
@@ -187,6 +207,16 @@
           {
             "internalType": "string",
             "name": "information",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "tags",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "data",
             "type": "string"
           }
         ],
