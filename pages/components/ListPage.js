@@ -136,6 +136,7 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
     return (
       <div class="itemPage">
         <div class="item-details">
+          <button class="close" onClick={togglePop2}>x</button>
             <div class="item-details2">
 
                 <div class="item-image" id="item-image"></div> 
