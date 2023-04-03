@@ -12,6 +12,7 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
     const [dataFile,setDataFile] = useState(null);
     const [data, setData] = useState([]);
 
+
     //ipfs
     const projectId = "2M3RsTdrt2xMd2SUInpHJf7JDlh";
     const projectSecret = "37549890a23ea362509f8517bf1bc14c";
@@ -84,13 +85,28 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
       toggleCategory()
     };
 
+
+    //encryption
+    const [encryptedData, setEncryptedData] = useState("");
+    const [decryptedData, setDecryptedData] = useState("");
+
     //listing item
     const listItem = async () => {
+
+      //encryption
+      const secretPass = "XkhZG4fW2t2W";
+        var AES = require("crypto-js/aes");
+        const data = AES.encrypt(
+          JSON.stringify(dataFile),
+          secretPass);
+
+        setEncryptedData(data);
+        console.log("file encrypted!");
 
       const imageLink = await uploadFileToIPFS(imageFile)
       console.log("image file uploaded at: " + imageLink);
 
-      const dataLink = await uploadFileToIPFS(dataFile)
+      const dataLink = await uploadFileToIPFS(encryptedData)
       console.log("data file uploaded at: " + dataLink);
 
       const signer = await provider.getSigner()

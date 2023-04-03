@@ -1,16 +1,32 @@
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
+import { create } from 'ipfs-http-client'
 
 const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
+
     const buyItem = async () => {
-        const signer = await provider.getSigner()
+        const signer = await provider.getSigner();
 
-        let transaction = dataMarket.connect(signer).buy(item.id, {value: item.price})
-        await transaction.wait()
+        let transaction = dataMarket.connect(signer).buy(item.id, {value: item.price});
+        await transaction.wait();
 
-        console.log("buying item")
+        console.log("buying item");
     }
+
+    //const decryptData = () => {
+    //    var AES = require("crypto-js/aes");
+    //    var enc = require("crypto-js/enc");
+    //    const bytes = AES.decrypt(text, secretPass);
+    //    const data = JSON.parse(bytes.toString(enc.Utf8));
+    //    setDecrptedData(data);
+    //  };
+
+    //download file from ipfs
+    //just opens file right now
+    async function downloadFile(){
+            window.open(item.data, '_blank');
+      };
 
     return(
         <div class="itemPage">
@@ -65,7 +81,7 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
                 <div class="item-order2">
                 {ethers.utils.formatUnits(item.price.toString(), 'ether')} ETH
                 </div>
-                <button class="item-buy" onClick={buyItem}>Buy Now</button>
+                <button class="item-buy" onClick={downloadFile}>Buy Now</button>
             </div>
 
         </div>
