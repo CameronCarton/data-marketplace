@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { create} from "ipfs-http-client";
 import Papa from 'papaparse';
+import { stringify } from 'csv-stringify';
 
 const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
     const [price, setPrice] = useState(0.0000);
@@ -52,14 +53,18 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
       //selecting data file
       fileSelector2.addEventListener('change', async (event) => {
         const file2 = event.target.files[0];
-        await setDataFile(file2);
+        const reader = new FileReader();
+
 
         //displaying data
-        const reader = new FileReader();
-        
-        reader.addEventListener('load', (event) => {
+        reader.addEventListener('load', async (event) => {
             const csv = Papa.parse(event.target.result, { header: true });
             const parsedData = csv?.data;
+            //stringify and save
+            const csvString = JSON.stringify(csv);
+            setDataFile(csvString);
+            console.log(JSON.stringify(csv));
+
             const columns = Object.keys(parsedData[0]);
             setData(columns);
         });
@@ -86,28 +91,32 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
     };
 
 
-    //encryption
-    const [encryptedData, setEncryptedData] = useState("");
-    const [decryptedData, setDecryptedData] = useState("");
-
     //listing item
     const listItem = async () => {
 
+      //stringify csv
+      console.log("before encryption " + dataFile);
+
       //encryption
-      const secretPass = "XkhZG4fW2t2W";
+      //test key
+      const secretKey = "9f8a7e6d5c4b3a291e0f1d2c3b4a5b6c7d8e9f0a1b2c3d4e5f6g7h8i9j0k1l2m3";
+
+      //encrypt data
         var AES = require("crypto-js/aes");
         const data = AES.encrypt(
-          JSON.stringify(dataFile),
-          secretPass);
+          dataFile,
+          secretKey);
 
-        setEncryptedData(data);
         console.log("file encrypted!");
-
-      const imageLink = await uploadFileToIPFS(imageFile)
+        console.log(data);
+      
+      //upload file
+      const imageLink = await uploadFileToIPFS(imageFile,1)
       console.log("image file uploaded at: " + imageLink);
 
-      const dataLink = await uploadFileToIPFS(encryptedData)
-      console.log("data file uploaded at: " + dataLink);
+      //upload encrypted data
+      const dataLink = await uploadFileToIPFS(data.toString(),2)
+      console.log("data file uploaded at: " + dataLink + ".... Data: " + data.toString());
 
       const signer = await provider.getSigner()
       const transaction = await dataMarket.connect(signer).list(
@@ -125,14 +134,20 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
     }
 
     //ipfs
-    const uploadFileToIPFS = async (file) => {
+    const uploadFileToIPFS = async (file, type) => {
       console.log("beginning upload to ipfs...")
   
       const fileLink = await ipfs.add(file);
 
       console.log("finished upload to ipfs!")
 
+      //this is for image or file cids, i am only saving the cid for the file data location
+      //however i am storing the whole url for the image data
+      if(type==1)
       return "https://ipfs.io/ipfs/"+fileLink.path;
+
+      if(type==2)
+      return fileLink.path;
     };
 
     //handle text input

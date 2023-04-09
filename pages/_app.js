@@ -34,7 +34,7 @@ function App() {
     //connecting to blockchain
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     setProvider(provider)
-
+    
     const network = await provider.getNetwork()
     console.log(network)
 
