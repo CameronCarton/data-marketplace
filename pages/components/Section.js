@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 const Section = ({account, items, togglePop, togglePop2}) => {
     const itemsF = items
     const [items2, setItems2] = useState(null);
+    const [itemsExtra, setItemsExtra] = useState(null);
 
     //filter prices
     const [price, setPrice] = useState(0.0000);
@@ -24,7 +25,7 @@ const Section = ({account, items, togglePop, togglePop2}) => {
     };
 
     //filter category
-    const [selectedCategories, setSelectedCategories] = useState(["category 1","category 2","category 3","category 4","category 5","category 6","category 7","sample"]);
+    const [selectedCategories, setSelectedCategories] = useState(["Demographic","Financial","Geographic","Consumer behavior","Environmental","Social media","Medical","Other"]);
     const toggleCategory = async (category) => {
         if (selectedCategories.includes(category)) {
             await setSelectedCategories(selectedCategories.filter((c) => c !== category));
@@ -47,7 +48,19 @@ const Section = ({account, items, togglePop, togglePop2}) => {
 
     useEffect(() => {
         setItems2(itemsF);
-      }, [itemsF]);
+    }, [itemsF]);
+
+    useEffect(() => {
+        if(items2!=null){
+        const items2Len = items2.length;
+        const extraLen = 4 - items2Len % 4;
+        const itemExtra = Array(extraLen).fill(0);
+        
+        setItemsExtra(itemExtra);
+        console.log(itemExtra);
+        }
+    }, [items2]);
+
 
     //search
     const [inputSearch, setInputSearch] = useState('');
@@ -130,14 +143,14 @@ const Section = ({account, items, togglePop, togglePop2}) => {
                             <div class="filter-container4">
                                 Categories
                                 <div class="filter-container5">
-                                    <button class="filter-button" data-category="category 1" onClick={() => toggleCategory("category 1")}>Category 1</button>
-                                    <button class="filter-button" data-category="category 2" onClick={() => toggleCategory("category 2")}>Category 2</button>
-                                    <button class="filter-button" data-category="category 3" onClick={() => toggleCategory("category 3")}>Category 3</button>
-                                    <button class="filter-button" data-category="category 4" onClick={() => toggleCategory("category 4")}>Category 4</button>
-                                    <button class="filter-button" data-category="category 5" onClick={() => toggleCategory("category 5")}>Category 5</button>
-                                    <button class="filter-button" data-category="category 6" onClick={() => toggleCategory("category 6")}>Category 6</button>
-                                    <button class="filter-button" data-category="category 7" onClick={() => toggleCategory("category 7")}>Category 7</button>
-                                    <button class="filter-button" data-category="sample" onClick={() => toggleCategory("sample")}>Sample</button>
+                                    <button class="filter-button" data-category="Demographic" onClick={() => toggleCategory("Demographic")}>Demographic</button>
+                                    <button class="filter-button" data-category="Financial" onClick={() => toggleCategory("Financial")}>Financial</button>
+                                    <button class="filter-button" data-category="Geographic" onClick={() => toggleCategory("Geographic")}>Geographic</button>
+                                    <button class="filter-button" data-category="Consumer behavior" onClick={() => toggleCategory("Consumer behavior")}>Consumer</button>
+                                    <button class="filter-button" data-category="Environmental" onClick={() => toggleCategory("Environmental")}>Environmental</button>
+                                    <button class="filter-button" data-category="Social media" onClick={() => toggleCategory("Social media")}>Social media</button>
+                                    <button class="filter-button" data-category="Medical" onClick={() => toggleCategory("Medical")}>Medical</button>
+                                    <button class="filter-button" data-category="Other" onClick={() => toggleCategory("Other")}>Other</button>
                                 </div>
                             </div>
                         </div>
@@ -154,24 +167,23 @@ const Section = ({account, items, togglePop, togglePop2}) => {
                         </div>
                         <div class="profile-container2">
                             <div class="profile-id-display">
-                                {account.slice(0,6) + '...' + account.slice(38,42)}
-                                </div>
-                                <div class="profile-button">
-                                    Account
-                                </div>
-                                <div class="profile-button" onClick={togglePop2}>
-                                    Create a Listing
-                                </div>
-                                <div class="profile-button">
-                                    Active Listings
-                                </div>
+                            {account.slice(0,6) + '...' + account.slice(38,42)}
+                            </div>
+
+                            <div class="profile-button" onClick={togglePop2}>
+                                Create a Listing
+                            </div>
+                            <div class="profile-button">
+                                Your Listings
                             </div>
                         </div>
+                    </div>
                     ):(
                         <p></p>
                     )}
+                    <div class="grid-container">
                     {items2 ? (
-                        <div class="grid-container">
+                        <>
                             {items2.map((item, i) => (
                                 <>
                                 <li class="listing-container" key={i} onClick={() => togglePop(item)}>
@@ -180,19 +192,31 @@ const Section = ({account, items, togglePop, togglePop2}) => {
                                     </div>
                                     <a class="listing-links">
                                         <a class="listing-links2">
-                                            <p>{item.name}</p>
-                                            <div class="listing-price-container">{ethers.utils.formatUnits(item.price.toString(),'ether')} ETH</div>
+                                        <strong>{item.name}</strong>
+                                        <strong class="listing-price-container">{ethers.utils.formatUnits(item.price.toString(),'ether')} ETH</strong>
                                         </a>
                                     </a>
                                 </li>
                                 </>
                             ))}
-                        </div>
+                        </>
                     ):(
-                        <div class="grid-container">
-                        </div>
+                        <></>
                     )}
                     
+                    {itemsExtra &&(
+                        <>
+                        {itemsExtra.map((item, i) => (
+                            <>
+                            <div key={i} class="listing-container" style={{background: '#E2E2E2'}}></div>
+                            </>
+                        ))}
+                        </>
+
+                    )}
+                    
+                    
+                    </div>
 
                 </div>
             </div>

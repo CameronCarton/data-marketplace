@@ -14,18 +14,13 @@ const connectWallet = async () => {
             <a href="https://nextjs.org" id="navbar-logo"> </a>
             <ul class="navbar-menu">
                 <li class="navbar-item">
-                    <a href="https://nextjs.org" class="navbar-links">Home</a>
-                </li>
-                <li class="navbar-item">
                 <a href="https://nextjs.org" class="navbar-links">Marketplace</a>
                 </li>
                 <li class="navbar-item">
                 <a href="https://nextjs.org" class="navbar-links">About</a>
                 </li>
                     {account ? (
-                        <li class="navbar-item">
-                        <a href="https://nextjs.org" class="navbar-links">Account</a>
-                        </li>
+                        <></>
                     ):(
                         <div id="wallet-container">
                             <button id="connect-wallet-button" onClick={connectWallet}>Connect Wallet</button>

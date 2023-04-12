@@ -3,18 +3,17 @@
 pragma solidity ^0.8.17;
 
 contract DataMarket{
-    address public owner;
+    address public deployer;
+    uint itemId = 0;
 
-    modifier mustBeOwner(){
-        require(msg.sender == owner);
-        _;
-    }
 
     constructor(){
-        owner = msg.sender;
+        deployer = msg.sender;
+        itemId=1;
     }
 
     struct Item {
+        address payable owner;
         uint id;
         string name;
         string image;
@@ -31,13 +30,14 @@ contract DataMarket{
         Item item;
     }
 
+    
     mapping(uint256 => Item)public items;
     mapping(address => mapping(uint256 => Order)) public orders;
 
     event List(string name, uint256 price);
 
     function list(
-        uint _id,
+        address payable _owner,
         string memory _name,
         string memory _image,
         string memory _category,
@@ -46,12 +46,15 @@ contract DataMarket{
         string memory _tags,
         string memory _data,
         string memory _dataSample
-    ) public mustBeOwner{
+    ) public {
         //create Item
-        Item memory item = Item(_id,_name,_image,_category,_price,_information,_tags,_data,_dataSample);
+        Item memory item = Item(_owner,itemId,_name,_image,_category,_price,_information,_tags,_data,_dataSample);
 
         //save Item
-        items[_id] = item;
+        items[itemId] = item;
+
+        //increment itemId
+        itemId += 1;
     }
 
     //Buying
@@ -62,6 +65,9 @@ contract DataMarket{
         //ensure enough ether is sent to buy product
         require(msg.value >= item.price);
 
+        //transfer payment
+        payable(address(item.owner)).transfer(item.price);
+
         //Create order
         Order memory order = Order(block.timestamp, item);
 
@@ -70,9 +76,4 @@ contract DataMarket{
 
     }
 
-    //withdraw funds
-    function withdraw() public mustBeOwner{
-        (bool success, ) = owner.call{value: address(this).balance}("");
-        require(success);
-    }
 }

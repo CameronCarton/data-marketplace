@@ -19,12 +19,12 @@ async function main() {
   dataMarket = await DataMarket.deploy()
   await dataMarket.deployed()
 
-  console.log('Deployed DataMarket Contract at: ${dataMarket.address}\n')
+  console.log("Deployed DataMarket Contract at: "+ dataMarket.address.toString() +"\n")
 
   //listing
   for (let i = 0; i < items.length; i++){
     const transaction = await dataMarket.connect(seller).list(
-      items[i].id,
+      seller.address,
       items[i].name,
       items[i].image,
       items[i].category,
@@ -36,7 +36,7 @@ async function main() {
     )
 
     await transaction.wait()
-    console.log("Listed item ID: ",items[i].id," NAME: ",items[i].name," CATEGORY: ",items[i].category)
+    console.log("Listed: "+ items[i].name)
   }
 }
 

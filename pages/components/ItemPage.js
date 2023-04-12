@@ -16,6 +16,8 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
     const [order,setOrder] = useState(null);
     const [hasBought,setHasBought] = useState(false);
+    const [isOwner,setIsOwner] = useState(false);
+    const [contractBalance,setContractBalance] = useState(null);
     const [hasDownloaded,setHasDownloaded] = useState("Download");
     const [dataSample, setDataSample] = useState(null);
     const [columns, setColumns] = useState();
@@ -45,8 +47,21 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
             });
         console.log("data retrieved!");
 
+        //check if you are the owner
+        const owner = await item.owner;
+        if(owner.toString() == account.toString()){
+          setIsOwner(true);
+          console.log("is owner");
+        }else{
+          setIsOwner(false);
+          console.log("is not owner");
+        }
+        console.log("YOUR ADDRESS: " + account.toString() + "  |||  OWNER ADDRESS: " + owner);
+
+        //check orders
         const order = await dataMarket.orders(account,item.id);
-        if(order.toString()=="0,0,,,,0,,,,")return;
+        console.log("Order string: " + order.toString());
+        if(order.toString()=="0,0x0000000000000000000000000000000000000000,0,,,,0,,,,")return;
         setOrder(order);
 
     }
@@ -61,6 +76,10 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
         setHasBought(true);
     }
+
+    const withdrawEarnings = async () => {
+
+  }
 
     //download file from ipfs
     async function downloadFile(){
@@ -132,7 +151,7 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
             <button class="close" onClick={togglePop}>x</button>
 
             <div class="item-order">
-                {order ?(
+                {order && !isOwner ?(
 
                     <div> 
                         <div class="item-order2">
@@ -158,15 +177,24 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
                     
                 ):(
                     <div> 
-                        <div class="item-order2">
-                            Product Price: <br />
-                            <strong>
-                                {ethers.utils.formatUnits(item.price.toString(), 'ether')} ETH
-                            </strong>
-                            
-                        </div>
-                        <button class="item-buy" onClick={buyItem}>Buy Now</button>
+                      <div class="item-order2">
+                        Product Price: <br />
+                        <strong>
+                          {ethers.utils.formatUnits(item.price.toString(), 'ether')} ETH
+                        </strong>     
+                      </div>
+
+                      <button class="item-buy" onClick={buyItem}>Buy Now</button>
                     </div>
+                )}
+
+                {isOwner ?(
+                  <div>
+                    <p>Contract Balance: </p>
+                    <button class="item-buy" onClick={withdrawEarnings}>Withdraw</button>
+                  </div>
+                ):(
+                  <></>
                 )}
                 
             </div>
@@ -234,10 +262,11 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
                 </div>
             </div>
 
-            <div class="item-text-box-files">
+            <div class="item-text-box-files" style={{ height: '38%'}}>
                 <div class="item-text-box2-info">
-                        <p>Description : </p>
-                        <p>{item.information}</p>
+                        Description
+                      <textarea class="item-text-box-info" rows="2" readOnly >
+                        {item.information}</textarea>
                 </div>
             </div>
 

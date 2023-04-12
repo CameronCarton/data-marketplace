@@ -131,7 +131,7 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
       //list
       const signer = await provider.getSigner()
       const transaction = await dataMarket.connect(signer).list(
-        items.length +1,
+        account,
         inputName,
         imageLink,
         selectedCategory,

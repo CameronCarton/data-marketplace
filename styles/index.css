@@ -232,12 +232,12 @@
 
   /* Services */
   .services {
-    background: #ffffff;
+    background: #464646;
     display: flex;
     flex-direction: column;
     justify-content: top;
     align-items: center;
-    height: 100vh;
+    height: 1800px;
     width:100%;
   }
 
@@ -246,12 +246,13 @@
     justify-content: top;
     padding-top: 0px;
     flex-wrap: wrap;
+    height: 100%;
     width:100%;
   }
 
   .services-visualTop {
     margin: 0px;
-    height: 200vh;
+    height: 100%;
     width: 100%;
     border-radius: 0px;
     justify-content: center;
@@ -260,7 +261,7 @@
     padding-top: 10vh;
     font-size: 2.4vw;
     color: #ffffff;
-    background: linear-gradient(to top, rgb(23, 0, 32) 0%, #000130 100%);
+    background: linear-gradient(to top, rgb(22, 31, 43) 80%,rgb(44, 100, 255)100%);
     background-size: contain;
     background-repeat: no-repeat;
     position: relative;
@@ -322,7 +323,7 @@
   }
 
   .marketplace-container {
-    height: 150vh;
+    height: 80%;
     width: 100%;
     border-radius: 0px;
     justify-content: center;
@@ -562,6 +563,7 @@
   margin: 0 auto;
   top:8vh;
   width: 70%;
+  max-width: 1800px;
   color: rgba(0,0,0,0);
   background: rgba(255, 255, 255, 1);
   border-radius: 0px;
@@ -577,14 +579,8 @@
   align-items: center;
   background: rgb(255, 255, 255);
   border: 1px solid rgb(255, 255, 255);
-  border-radius: 0px;
+  border-radius: 2px;
   position: relative;
-}
-
-@media screen and (min-width: 2200px) {
-  .listing-container {
-  width: 19.75%;
-  }
 }
 
 
@@ -637,12 +633,14 @@
 }
 
 .listing-links2 {
-  color: #2b2b2b;
+  color: #000000;
+  display:flex;
+  flex-direction: column;
   height: 30%;
   width: 100%;
   border-radius: 0px;
   border: 0px solid rgb(46, 46, 46);
-  background: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.7);
   justify-content: bottom;
   bottom:0;
   left:0;
@@ -663,8 +661,9 @@
   padding: 3px;
   padding-left: 6px;
   padding-right: 6px;
+  max-width: 50%;
   display: inline-block;
-  justify-content: center;
+  justify-content: left;
   text-align: center;
   font-size: 1.2rem;
   border-radius: 8px;
@@ -831,7 +830,7 @@ transition: all 0.5s ease;
   width: 100%;
   justify-content: center;
   align-items: center;
-  border-radius: 0px;
+  border-radius: 4px;
   border: 0px solid rgb(179, 179, 179);
   background: rgb(179, 179, 179);
   background-size: contain;
@@ -846,11 +845,12 @@ transition: all 0.5s ease;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 0px;
+  border-radius: 4px;
   position: absolute;
   top:0%;
   left:0%;
 }
+
 
 .close {
   color: #464646;
@@ -1043,7 +1043,7 @@ transition: all 0.5s ease;
   margin-top: 3%;
   background: #ffffff;
   border-radius: 0px;
-  border: 1px solid rgb(56, 56, 56);
+  border: 1px solid rgb(216, 216, 216);
   color: rgb(56, 56, 56);
   font-size: 1.2rem;
   resize: none;
@@ -1078,9 +1078,9 @@ transition: all 0.5s ease;
   min-height: 80%;
   width: 80%;
   margin-top: 3%;
-  background: #ffffff;
+  background: rgba(0,0,0,0);
   border-radius: 0px;
-  border: 1px solid rgb(56, 56, 56);
+  border: 1px solid rgb(216, 216, 216);
   color: rgb(56, 56, 56);
   font-size: 1.2rem;
   resize: none;
@@ -1097,7 +1097,7 @@ transition: all 0.5s ease;
   margin-top: 1%;
   width: 100%;
   padding-left:10%;
-  background: #ffffff;
+  background: rgba(0,0,0,0);
   border-radius: 0px;
   border: 0px solid rgb(56, 56, 56);
   color: rgb(56, 56, 56);
@@ -1114,7 +1114,7 @@ transition: all 0.5s ease;
   padding: 10px 10px 10px 10px;
   height: 16%;
   width: 100%;
-  background: #ffffff;
+  background: rgba(0,0,0,0);
   border-radius: 0px;
   border: 0px solid rgb(56, 56, 56);
   color: rgb(56, 56, 56);
@@ -1128,7 +1128,7 @@ transition: all 0.5s ease;
   text-decoration: none;
   height: 22%;
   width: 100%;
-  background: #ffffff;
+  background: rgba(0,0,0,0);
   border-radius: 0px;
   border: 0px solid rgb(56, 56, 56);
   color: rgb(56, 56, 56);

@@ -1,114 +1,55 @@
 {
     "items": [
       {
-        "id": 1,
-        "name": "Sample Data",
-        "category": "sample",
-        "image": "https://ipfs.io/ipfs/QmQ2Eyy2WC2k5aqeT4CWYH5Kuv4ZKcFrBUXxeUXuDMX8Uz",
+        "name": "Earthquake Data",
+        "category": "Geographic",
+        "image": "https://ipfs.io/ipfs/QmTrEEGkYXYATXTKexx5HXeb9z73S98ke1MLMtPAcn69qz",
         "price": "0.2",
         "information": "this is default information",
-        "tags": "sample, data, test1",
-        "data": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh",
-        "dataSample": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh"
+        "tags": "earthquake, seismic activity, geology, natural disasters, disaster response, earthquake prediction, seismic waves, plate tectonics, earthquake data, earthquake patterns",
+        "data": "QmWfHZJ5VdXa4xD3e9iM2dm2jfuGYqguVda1QCPbGgsn2K",
+        "dataSample": "QmcagufavPVBe2upFmEVHoMfb1RRvqVLYLyWvJJM3KPUzx"
       },
       {
-        "id": 2,
-        "name": "Sample Data2",
-        "category": "sample",
-        "image": "https://ipfs.io/ipfs/QmPsKKoXJkgfYj7FnY5P5ckJXzmCb8F4mhDESLQhCQ4c8F",
+        "name": "Gaming Console Popularity",
+        "category": "Consumer behavior",
+        "image": "https://ipfs.io/ipfs/QmWWwD1CS6WuZXpJ9HMAD7KdWV3snvKXjzNahPwHj3drpW",
         "price": "3.14",
         "information": "this is default information",
-        "tags": "sample, data, test1",
-        "data": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh",
-        "dataSample": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh"
+        "tags": "gaming, gaming consoles, market analysis, consumer behavior, sales figures, market share, data-driven decisions, popularity, age groups, regions, industry insights",
+        "data": "Qmdg76RdGzhDi9CMLJnpXoNyThL7AcRbHDseB3SNP4XMmK",
+        "dataSample": "QmZGsuc7EpmV81eVbA6Y4s2QdWVZbHXquSYCMLFGAuHaAQ"
       },
       {
-        "id": 3,
-        "name": "Sample Data3",
-        "category": "sample",
-        "image": "https://ipfs.io/ipfs/QmampN1xeBRdmMvfQUVuEEc3yp688CDo29eYym5NXmtdQe",
+        "name": "Honda Sales Information",
+        "category": "Consumer behavior",
+        "image": "https://ipfs.io/ipfs/QmdanA6tTUTrBYDhUr58Unb5cwSefrUHs1exHAjxgSknsC",
         "price": "9",
         "information": "this is default information",
-        "tags": "sample, data, test2",
-        "data": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh",
-        "dataSample": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh"
+        "tags": "Honda, automotive industry, sales data, vehicle models, market share, consumer behavior, revenue, regional sales, time-series analysis, data-driven decisions, industry insights",
+        "data": "QmNejNqAMsif2vddKecQfznm9DUnVVSC7VPpS73PmoLYkj",
+        "dataSample": "QmX6PT1SZGG9PQHW4CCJKWAzhjAKxp2U45tjveArD2Pbsx"
       },
       {
-        "id": 4,
-        "name": "Sample Data4",
-        "category": "sample",
-        "image": "https://ipfs.io/ipfs/QmPsKKoXJkgfYj7FnY5P5ckJXzmCb8F4mhDESLQhCQ4c8F",
-        "price": "1.6",
+        "name": "AACG Stock Price",
+        "category": "Financial",
+        "image": "https://ipfs.io/ipfs/QmSHwDhyeh5rwhuTAmWN7cCx7nMZkCJxaM6rjaph32DN1w",
+        "price": "0.006",
         "information": "this is default information",
-        "tags": "sample, data, test2",
-        "data": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh",
-        "dataSample": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh"
-      },
+        "tags": "NASDAQ, stock market, financial data, trading, market analysis, time-series analysis, stock prices, market trends, historical data,",
+        "data": "QmbUQLrftBAyARnLLkitJUeJC6mLVE4siFBPiybwojtHPk",
+        "dataSample": "QmT49vk3TwYDMQQ3ZbQuLFS5skJdyHx2esnJjEWU4uax7Q"
+      }
+      ,
       {
-        "id": 5,
-        "name": "Sample Data5",
-        "category": "sample",
-        "image": "https://ipfs.io/ipfs/Qmd8nwWMXchA2JK9RmHe2ZYtDcQg8T25TinXUX5UsZKFYY",
-        "price": "0.01",
+        "name": "RCON Stock Price",
+        "category": "Financial",
+        "image": "https://ipfs.io/ipfs/QmcYANSkXV3Qzz9Kbjzps1d6zkBrTjakUomE4sMeCqLZN2",
+        "price": "0.7765",
         "information": "this is default information",
-        "tags": "sample, data, test3",
-        "data": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh",
-        "dataSample": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh"
-      },
-      {
-        "id": 6,
-        "name": "Sample Data6",
-        "category": "sample",
-        "image": "https://ipfs.io/ipfs/Qmd8nwWMXchA2JK9RmHe2ZYtDcQg8T25TinXUX5UsZKFYY",
-        "price": "8.2",
-        "information": "this is default information",
-        "tags": "sample, data, test1",
-        "data": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh",
-        "dataSample": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh"
-      },
-      {
-        "id": 7,
-        "name": "Sample Data7",
-        "category": "sample",
-        "image": "https://ipfs.io/ipfs/QmPsKKoXJkgfYj7FnY5P5ckJXzmCb8F4mhDESLQhCQ4c8F",
-        "price": "74",
-        "information": "this is default information",
-        "tags": "sample, data, test1",
-        "data": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh",
-        "dataSample": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh"
-      },
-      {
-        "id": 8,
-        "name": "Sample Data8",
-        "category": "sample",
-        "image": "https://ipfs.io/ipfs/QmQ2Eyy2WC2k5aqeT4CWYH5Kuv4ZKcFrBUXxeUXuDMX8Uz",
-        "price": "9.003",
-        "information": "this is default information",
-        "tags": "sample, data, test2",
-        "data": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh",
-        "dataSample": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh"
-      },
-      {
-        "id": 9,
-        "name": "Sample Data9",
-        "category": "sample",
-        "image": "https://ipfs.io/ipfs/QmPsKKoXJkgfYj7FnY5P5ckJXzmCb8F4mhDESLQhCQ4c8F",
-        "price": "6.678",
-        "information": "this is default information",
-        "tags": "sample, data, test2",
-        "data": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh",
-        "dataSample": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh"
-      },
-      {
-        "id": 10,
-        "name": "Sample Data10",
-        "category": "sample",
-        "image": "https://ipfs.io/ipfs/QmQ2Eyy2WC2k5aqeT4CWYH5Kuv4ZKcFrBUXxeUXuDMX8Uz",
-        "price": "0.07",
-        "information": "this is default information",
-        "tags": "sample, data, test3",
-        "data": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh",
-        "dataSample": "https://ipfs.io/ipfs/QmSHoEDR8RYLPJhwb8tBZG4JC8pvQ6Uc3LdwfZCUUaKYBh"
+        "tags": "NASDAQ, stock market, financial data, trading, market analysis, time-series analysis, stock prices, market trends, historical data,",
+        "data": "QmUe38iQPPV1mP4dHa8KSJmouBpFPijEpUYvyEz7tenjeA",
+        "dataSample": "QmVsaa86QpzuVtFWwAdpdrza8vcnnM5zkdL6z6SabWutJo"
       }
     ]
   }
