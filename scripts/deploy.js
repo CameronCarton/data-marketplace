@@ -32,6 +32,7 @@ async function main() {
       items[i].information,
       items[i].tags,
       items[i].data,
+      items[i].dataSample,
     )
 
     await transaction.wait()

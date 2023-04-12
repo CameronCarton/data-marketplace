@@ -23,6 +23,7 @@ contract DataMarket{
         string information;
         string tags;
         string data;
+        string dataSample;
     }
 
     struct Order{
@@ -31,7 +32,6 @@ contract DataMarket{
     }
 
     mapping(uint256 => Item)public items;
-    mapping(address => uint256) public orderCount;
     mapping(address => mapping(uint256 => Order)) public orders;
 
     event List(string name, uint256 price);
@@ -44,10 +44,11 @@ contract DataMarket{
         uint256 _price,
         string memory _information,
         string memory _tags,
-        string memory _data
+        string memory _data,
+        string memory _dataSample
     ) public mustBeOwner{
         //create Item
-        Item memory item = Item(_id,_name,_image,_category,_price,_information,_tags,_data);
+        Item memory item = Item(_id,_name,_image,_category,_price,_information,_tags,_data,_dataSample);
 
         //save Item
         items[_id] = item;
@@ -65,8 +66,7 @@ contract DataMarket{
         Order memory order = Order(block.timestamp, item);
 
         //save order
-        orderCount[msg.sender]++;
-        orders[msg.sender][orderCount[msg.sender]] = order;
+        orders[msg.sender][_id] = order;
 
     }
 

@@ -85,6 +85,11 @@
         "internalType": "string",
         "name": "data",
         "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "dataSample",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -131,30 +136,16 @@
         "internalType": "string",
         "name": "_data",
         "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_dataSample",
+        "type": "string"
       }
     ],
     "name": "list",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "orderCount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -217,6 +208,11 @@
           {
             "internalType": "string",
             "name": "data",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "dataSample",
             "type": "string"
           }
         ],

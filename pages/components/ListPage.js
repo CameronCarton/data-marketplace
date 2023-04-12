@@ -3,7 +3,14 @@ import { useEffect, useState } from 'react'
 
 import { create} from "ipfs-http-client";
 import Papa from 'papaparse';
-import { stringify } from 'csv-stringify';
+
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
     const [price, setPrice] = useState(0.0000);
@@ -11,7 +18,9 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [imageFile,setImageFile] = useState(null);
     const [dataFile,setDataFile] = useState(null);
-    const [data, setData] = useState([]);
+    const [csvDisplay, setCsvDisplay] = useState([]);
+    const [columns, setColumns] = useState();
+    const [data, setData] = useState();
 
 
     //ipfs
@@ -59,14 +68,19 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
         //displaying data
         reader.addEventListener('load', async (event) => {
             const csv = Papa.parse(event.target.result, { header: true });
-            const parsedData = csv?.data;
             //stringify and save
             const csvString = JSON.stringify(csv);
             setDataFile(csvString);
-            console.log(JSON.stringify(csv));
 
-            const columns = Object.keys(parsedData[0]);
-            setData(columns);
+            // Get the first 10 records of the CSV data
+            const csvFirst10 = { data: csv.data.slice(0, 10), meta: csv.meta };
+
+            //csv to display
+            setCsvDisplay(JSON.stringify(csvFirst10));
+            const data = csvFirst10.data;
+            const columns = Object.keys(csvFirst10.data[0]);
+            setData(data);
+            setColumns(columns);
         });
         reader.readAsText(file2);
       });
@@ -81,7 +95,6 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
   
     function toggleCategory(){
         categoryToggle ? setCategoryToggle(false) : setCategoryToggle(true)
-        console.log("toggled category")
     };
   
     const setCategory = (category) => {
@@ -93,10 +106,6 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
 
     //listing item
     const listItem = async () => {
-
-      //stringify csv
-      console.log("before encryption " + dataFile);
-
       //encryption
       //test key
       const secretKey = "9f8a7e6d5c4b3a291e0f1d2c3b4a5b6c7d8e9f0a1b2c3d4e5f6g7h8i9j0k1l2m3";
@@ -106,9 +115,6 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
         const data = AES.encrypt(
           dataFile,
           secretKey);
-
-        console.log("file encrypted!");
-        console.log(data);
       
       //upload file
       const imageLink = await uploadFileToIPFS(imageFile,1)
@@ -116,8 +122,13 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
 
       //upload encrypted data
       const dataLink = await uploadFileToIPFS(data.toString(),2)
-      console.log("data file uploaded at: " + dataLink + ".... Data: " + data.toString());
+      console.log("data file uploaded at: " + dataLink);
 
+      //upload data sample
+      const dataSampleLink = await uploadFileToIPFS(csvDisplay.toString(),2)
+      console.log("data Sample uploaded at: " + dataSampleLink);
+
+      //list
       const signer = await provider.getSigner()
       const transaction = await dataMarket.connect(signer).list(
         items.length +1,
@@ -128,6 +139,7 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
         inputInfo,
         inputTags,
         dataLink,
+        dataSampleLink,
       )
       await transaction.wait()
       console.log("listed item");
@@ -163,6 +175,8 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
     const tagsChange = (event) => {
       setInputTags(event.target.value);
     }
+
+
 
     return (
       <div class="itemPage">
@@ -216,14 +230,6 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
                       <input type="file" id="file-selector2" accept="text/*" />
                       <label htmlFor="file-selector" class="button"></label>
 
-                      {dataFile ? (
-                      <div>
-                          {data.map((col,idx) => <div key={idx}>{col}</div>)}
-                      </div>
-                      ):(
-                        <p>null</p>
-                      )}
-
                     </div>
 
                 </div>
@@ -231,7 +237,38 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
             </div>
 
             <div class="item-text-box-files">
-                
+                <div class="item-text-box2-info">
+                  Sample Data Records <br />
+                  <div class="item-text-box-info" >
+
+                    {dataFile ? (
+                        <TableContainer component={Paper} style={{ height: '300px', width: '940px', overflow: 'scroll'}}>
+                          <Table sx={{ minWidth: 650 }} size="small">
+                            <TableHead>
+                              <TableRow>
+                                {columns.map((column) => (
+                                  <TableCell key={column}>{column}</TableCell>
+                                ))}
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {data.map((row, index) => (
+                                <TableRow key={index}>
+                                  {columns.map((column) => (
+                                    <TableCell key={column} align="right">
+                                      {row[column]}
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                    ):(
+                      <p>No Data to Display</p>
+                    )}
+                  </div>
+                </div>
             </div>
 
             <div class="item-text-box-files">
