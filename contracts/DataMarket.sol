@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 
 contract DataMarket{
     address public deployer;
-    uint itemId = 0;
+    uint public itemId = 0;
 
 
     constructor(){

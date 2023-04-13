@@ -548,8 +548,8 @@
   }
 
   .profile-button:hover{
-    color: rgb(0,0,0);
-    background: rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+    background: rgb(87, 87, 87);
     border: 2px solid rgb(87, 87, 87);
     transition: all 0.5s ease;
   }
@@ -775,6 +775,7 @@ transition: all 0.5s ease;
   margin: 5%;
   border-radius: 0px;
   border-bottom: 2px solid rgb(179, 179, 179);
+  background: rgb(255, 255, 255);
   padding: 10px 20px 20px 20px;
   font-size: 1.2rem;
   position:absolute;

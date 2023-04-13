@@ -47,8 +47,8 @@ function App() {
 
     //loading items
     const items = [];
-    const itemsLength = 20
-    for (var i=0; i<itemsLength; i++){
+    const itemsLength = await dataMarket.itemId();
+    for (var i=0; i<itemsLength-1; i++){
       const item = await dataMarket.items(i+1)
       if(item.name != ""){
         items.push(item);
@@ -67,7 +67,7 @@ function App() {
   return (
     <div>
       <Navigation account={account} setAccount={setAccount}/>
-      <Section account={account} items={items} togglePop={togglePop} togglePop2={togglePop2}/>
+      <Section account={account} items={items} dataMarket={dataMarket} togglePop={togglePop} togglePop2={togglePop2}/>
 
       {toggle &&(
         <ItemPage item={item} provider={provider} account={account} dataMarket={dataMarket} togglePop={togglePop} />

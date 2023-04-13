@@ -208,14 +208,14 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
                             <button onClick={() => toggleCategory()}>{selectedCategory}</button>
                             {categoryToggle &&(
                                 <div class="category-content">
-                                <a href="#" onClick={() => setCategory('Category 1')}>Category 1</a>
-                                <a href="#" onClick={() => setCategory('Category 2')}>Category 2</a>
-                                <a href="#" onClick={() => setCategory('Category 3')}>Category 3</a>
-                                <a href="#" onClick={() => setCategory('Category 4')}>Category 4</a>
-                                <a href="#" onClick={() => setCategory('Category 5')}>Category 5</a>
-                                <a href="#" onClick={() => setCategory('Category 6')}>Category 6</a>
-                                <a href="#" onClick={() => setCategory('Category 7')}>Category 7</a>
-                                <a href="#" onClick={() => setCategory('Category 8')}>Category 8</a>
+                                <a href="#" onClick={() => setCategory('Demographic')}>Demographic</a>
+                                <a href="#" onClick={() => setCategory('Financial')}>Financial</a>
+                                <a href="#" onClick={() => setCategory('Geographic')}>Geographic</a>
+                                <a href="#" onClick={() => setCategory('Consumer behavior')}>Consumer</a>
+                                <a href="#" onClick={() => setCategory('Environmental')}>Environmental</a>
+                                <a href="#" onClick={() => setCategory('Social media')}>Social media</a>
+                                <a href="#" onClick={() => setCategory('Medical')}>Medical</a>
+                                <a href="#" onClick={() => setCategory('Other')}>Other</a>
                                 </div>
                             )}
                         </div>

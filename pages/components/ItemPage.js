@@ -60,7 +60,6 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
         //check orders
         const order = await dataMarket.orders(account,item.id);
-        console.log("Order string: " + order.toString());
         if(order.toString()=="0,0x0000000000000000000000000000000000000000,0,,,,0,,,,")return;
         setOrder(order);
 
@@ -190,8 +189,13 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
                 {isOwner ?(
                   <div>
-                    <p>Contract Balance: </p>
-                    <button class="item-buy" onClick={withdrawEarnings}>Withdraw</button>
+                    <div class="item-order2">
+                      This Product was Listed by you for: <br />
+                        <strong>
+                          {ethers.utils.formatUnits(item.price.toString(), 'ether')} ETH
+                        </strong> 
+                    </div>
+                    <button class="item-buy" onClick={downloadFile}>Download</button>
                   </div>
                 ):(
                   <></>

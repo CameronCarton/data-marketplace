@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import React from 'react'
 import { useEffect, useState } from 'react'
 
-const Section = ({account, items, togglePop, togglePop2}) => {
+const Section = ({account, items, dataMarket, togglePop, togglePop2}) => {
     const itemsF = items
     const [items2, setItems2] = useState(null);
     const [itemsExtra, setItemsExtra] = useState(null);
@@ -93,6 +93,36 @@ const Section = ({account, items, togglePop, togglePop2}) => {
         setItems2(filteredItems.filter(Boolean));
     };
 
+    //filter to your listings only
+    const yourListings = async () => {
+        //filter items to only matching your address
+        const filteredItems = await Promise.all(
+            itemsF.map(async (item) => {
+                const owner = await item.owner;
+                if(owner.toString() == account.toString()){
+                    return item;
+                }
+            })
+        );
+      
+        setItems2(filteredItems.filter(Boolean));
+    };
+
+    //filter to your purchases only
+    const yourPurchases = async () => {
+        //filter items to if you have an order
+        const filteredItems = await Promise.all(
+            itemsF.map(async (item) => {
+                const order = await dataMarket.orders(account,item.id);
+                if(order.toString()!="0,0x0000000000000000000000000000000000000000,0,,,,0,,,,"){
+                    return item;
+                }
+            })
+        );
+      
+        setItems2(filteredItems.filter(Boolean));
+    };
+
     return(
         <div class="services">
         <div class="services-container">
@@ -173,8 +203,14 @@ const Section = ({account, items, togglePop, togglePop2}) => {
                             <div class="profile-button" onClick={togglePop2}>
                                 Create a Listing
                             </div>
-                            <div class="profile-button">
+                            <div class="profile-button" onClick={yourListings}>
                                 Your Listings
+                            </div>
+                            <div class="profile-button" onClick={yourPurchases}>
+                                Your Purchases
+                            </div>
+                            <div class="profile-button" onClick={handleSubmit}>
+                                All Listings
                             </div>
                         </div>
                     </div>
@@ -193,7 +229,15 @@ const Section = ({account, items, togglePop, togglePop2}) => {
                                     <a class="listing-links">
                                         <a class="listing-links2">
                                         <strong>{item.name}</strong>
-                                        <strong class="listing-price-container">{ethers.utils.formatUnits(item.price.toString(),'ether')} ETH</strong>
+                                        {account != null && item.owner == account.toString() ?(
+                                            <>
+                                                <strong class="listing-price-container">Listed by You</strong>
+                                            </>
+                                        ):(
+                                            <>
+                                            <strong class="listing-price-container">{ethers.utils.formatUnits(item.price.toString(),'ether')} ETH</strong>
+                                            </>
+                                        )}
                                         </a>
                                     </a>
                                 </li>
