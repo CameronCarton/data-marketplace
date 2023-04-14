@@ -29,6 +29,21 @@
         "internalType": "uint256",
         "name": "_id",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_g",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_n",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_gb",
+        "type": "uint256"
       }
     ],
     "name": "buy",
@@ -121,6 +136,11 @@
         "internalType": "string",
         "name": "dataSample",
         "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amountOfOrders",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -195,6 +215,16 @@
     "name": "orders",
     "outputs": [
       {
+        "internalType": "address",
+        "name": "buyer",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
         "internalType": "uint256",
         "name": "time",
         "type": "uint256"
@@ -250,14 +280,87 @@
             "internalType": "string",
             "name": "dataSample",
             "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountOfOrders",
+            "type": "uint256"
           }
         ],
         "internalType": "struct DataMarket.Item",
         "name": "item",
         "type": "tuple"
+      },
+      {
+        "internalType": "uint256",
+        "name": "complete",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "g",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "n",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "gb",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "gs",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "data",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_owner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_buyer",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_complete",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_gs",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_data",
+        "type": "string"
+      }
+    ],
+    "name": "setOrderComplete",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

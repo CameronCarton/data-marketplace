@@ -52,26 +52,86 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
         if(owner.toString() == account.toString()){
           setIsOwner(true);
           console.log("is owner");
+
+          //accept buy
+          const s_key = 15;
+          const g = 2;
+          const n = 23;
+          const gs_key = (g ** s_key)%n;
+
+          //get buyer details
+          let buyer;
+          const itemsLength = item.amountOfOrders;
+          for (var i=1; i<=itemsLength; i++){
+            const order_ = await dataMarket.orders(account,i);
+            console.log(order_);
+            const order_item = order_.item;
+            if((order_.complete).toString() == "1" && (order_item.id).toString() == (item.id).toString()){
+              buyer = order_.buyer;
+              break;
+            }
+          }
+
+          const accountAddress = ethers.utils.getAddress(account);
+          const buyerAddress = ethers.utils.getAddress(buyer);
+          const completed = 2;
+          const dataLocation = item.data.toString();
+          const itemID = parseInt(item.id);
+          const gs_key2 = parseInt(gs_key.toString());
+          console.log(accountAddress);
+          console.log(buyerAddress);
+          console.log(itemID);
+          console.log(completed);
+          console.log(gs_key2);
+          console.log(dataLocation);
+
+          //send s key and data transaction
+          const signer = await provider.getSigner();
+          let transaction2 = dataMarket.connect(signer).setOrderComplete(accountAddress, buyerAddress, 
+                                                                        itemID, 
+                                                                        completed, 
+                                                                        gs_key2, 
+                                                                        dataLocation);
+          const trans2 = await transaction2;
+
         }else{
           setIsOwner(false);
           console.log("is not owner");
+
+          //check orders
+          const itemsLength = item.amountOfOrders;
+          for (var i=1; i<=itemsLength; i++){
+            const order_ = await dataMarket.orders(item.owner,i);
+            const completed = await order_.complete;
+            console.log(order_.buyer);
+            console.log(account);
+            console.log(completed);
+            if(order_.buyer == account && (completed).toString()=="2"){
+              setOrder(order_);
+              break;
+            }
+          }
         }
         console.log("YOUR ADDRESS: " + account.toString() + "  |||  OWNER ADDRESS: " + owner);
-
-        //check orders
-        const order = await dataMarket.orders(account,item.id);
-        if(order.toString()=="0,0x0000000000000000000000000000000000000000,0,,,,0,,,,")return;
-        setOrder(order);
 
     }
 
     const buyItem = async () => {
+
+        //keys for getting encryption key
+        const b_key = 15;
+        const g = 2;
+        const n = 23;
+        const gb_key = (g ** b_key)%n;
+
+        //buy
         const signer = await provider.getSigner();
 
-        let transaction = dataMarket.connect(signer).buy(item.id, {value: item.price});
+        let transaction = dataMarket.connect(signer).buy(item.id, g, n, gb_key, {value: item.price});
         const trans = await transaction;
 
-        console.log("buying item" + trans.toString());
+
+        console.log("buying item  " + trans.toString());
 
         setHasBought(true);
     }
