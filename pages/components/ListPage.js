@@ -1,9 +1,9 @@
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-
 import { create} from "ipfs-http-client";
 import Papa from 'papaparse';
 
+//csv display table
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,7 +12,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+
+
 const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
+
+
     const [price, setPrice] = useState(0.0000);
     const [categoryToggle, setCategoryToggle] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -21,6 +25,10 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
     const [csvDisplay, setCsvDisplay] = useState([]);
     const [columns, setColumns] = useState();
     const [data, setData] = useState();
+    const [inputName, setInputName] = useState('');
+    const [inputInfo, setInputInfo] = useState('');
+    const [inputTags, setInputTags] = useState('');
+
 
 
     //ipfs
@@ -33,6 +41,26 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
         authorization
       }
     })
+
+
+
+    //ipfs upload
+    const uploadFileToIPFS = async (file, type) => {
+
+      //upload
+      console.log("Beginning upload to ipfs...")
+      const fileLink = await ipfs.add(file);
+      console.log("Finished upload to ipfs!")
+
+      //image files
+      if(type==1)
+      return "https://ipfs.io/ipfs/"+fileLink.path;
+
+      //data files
+      if(type==2)
+      return fileLink.path;
+    };
+
 
 
     useEffect(() => {
@@ -85,6 +113,8 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
         reader.readAsText(file2);
       });
     }, []);
+
+
   
     const handlePriceChange = (event) => {
       const inputValue = parseFloat(event.target.value);
@@ -92,16 +122,21 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
         setPrice(inputValue);
       }
     };
+
+
   
     function toggleCategory(){
         categoryToggle ? setCategoryToggle(false) : setCategoryToggle(true)
     };
   
+
+
     const setCategory = (category) => {
       setSelectedCategory(category);
       const button = document.querySelector('.category button');
       toggleCategory()
     };
+
 
 
     //listing item
@@ -145,33 +180,15 @@ const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
       console.log("listed item");
     }
 
-    //ipfs
-    const uploadFileToIPFS = async (file, type) => {
-      console.log("beginning upload to ipfs...")
-  
-      const fileLink = await ipfs.add(file);
 
-      console.log("finished upload to ipfs!")
-
-      //this is for image or file cids, i am only saving the cid for the file data location
-      //however i am storing the whole url for the image data
-      if(type==1)
-      return "https://ipfs.io/ipfs/"+fileLink.path;
-
-      if(type==2)
-      return fileLink.path;
-    };
 
     //handle text input
-    const [inputName, setInputName] = useState('');
     const nameChange = (event) => {
       setInputName(event.target.value);
     }
-    const [inputInfo, setInputInfo] = useState('');
     const infoChange = (event) => {
       setInputInfo(event.target.value);
     }
-    const [inputTags, setInputTags] = useState('');
     const tagsChange = (event) => {
       setInputTags(event.target.value);
     }

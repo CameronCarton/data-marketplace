@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 import '../styles/index.css'
-
-// Components
 import Navigation from './components/Navigation'
 import Section from './components/Section'
 import ItemPage from './components/ItemPage'
 import ListPage from './components/ListPage'
-
 import config from './config.json'
 import DataMarket from './abi/DataMarket.json'
 
+
+
 function App() {
+
+
   const [provider, setProvider] = useState(null);
   const [dataMarket, setDataMarket] = useState(null);
   const [account, setAccount] = useState(null);
@@ -20,6 +21,9 @@ function App() {
   const [toggle, setToggle] = useState(false)
   const [toggle2, setToggle2] = useState(false)
 
+
+
+  //selects item
   const togglePop = async (item) => {
     setItem(item)
     toggle ? setToggle(false) : setToggle(true)
@@ -30,11 +34,12 @@ function App() {
     console.log("list item page")
   }
 
+
+  //loads blockchain data
   const loadBlockchainData = async () => {
     //connecting to blockchain
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     setProvider(provider)
-    
     const network = await provider.getNetwork()
     console.log(network)
 
@@ -45,7 +50,7 @@ function App() {
       provider)
     setDataMarket(dataMarket)
 
-    //loading items
+    //loads all items from smart contract into an array
     const items = [];
     const itemsLength = await dataMarket.itemId();
     for (var i=0; i<itemsLength-1; i++){
@@ -54,15 +59,16 @@ function App() {
         items.push(item);
       }
     }
-
     setItems(items);
-
-    console.log(items);
   }
+
+
 
   useEffect(() => {
     loadBlockchainData()
   }, [])
+
+
 
   return (
     <div>
