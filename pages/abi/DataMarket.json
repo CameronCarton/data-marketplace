@@ -31,19 +31,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
-        "name": "_g",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_n",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
+        "internalType": "string",
         "name": "_gb",
-        "type": "uint256"
+        "type": "string"
       }
     ],
     "name": "buy",
@@ -136,11 +126,6 @@
         "internalType": "string",
         "name": "dataSample",
         "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amountOfOrders",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -280,11 +265,6 @@
             "internalType": "string",
             "name": "dataSample",
             "type": "string"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountOfOrders",
-            "type": "uint256"
           }
         ],
         "internalType": "struct DataMarket.Item",
@@ -297,24 +277,14 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
-        "name": "g",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "n",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
+        "internalType": "string",
         "name": "gb",
-        "type": "uint256"
+        "type": "string"
       },
       {
-        "internalType": "uint256",
+        "internalType": "string",
         "name": "gs",
-        "type": "uint256"
+        "type": "string"
       },
       {
         "internalType": "string",
@@ -348,9 +318,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
+        "internalType": "string",
         "name": "_gs",
-        "type": "uint256"
+        "type": "string"
       },
       {
         "internalType": "string",
@@ -361,6 +331,25 @@
     "name": "setOrderComplete",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "userOrders",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]
