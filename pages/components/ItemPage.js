@@ -195,8 +195,8 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
         //Seller public key (gs_key) is stored in Smart Contract
         const signer = await provider.getSigner();
-        let transaction = dataMarket.connect(signer).setOrderComplete(accountAddress, 
-                                                                      buyerAddress, 
+        let transaction = dataMarket.connect(signer).setOrderComplete(buyerAddress, 
+                                                                      order.id,
                                                                       itemID, 
                                                                       completed, 
                                                                       gs_key, 
@@ -266,7 +266,7 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
         //Retrieve the Encrypted Data from IPFS
         setHasDownloaded("Fetching Data...");
-        console.log("retrieving data from ipfs...");
+        console.log("Retrieving Data from IPFS...");
 
         await fetch("https://ipfs.io/ipfs/" + (order.data).toString())
         .then(response => response.text())

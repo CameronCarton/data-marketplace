@@ -3,6 +3,7 @@
 pragma solidity ^0.8.17;
 
 contract DataMarket{
+
     address public deployer;
     uint public itemId = 0;
 
@@ -34,12 +35,24 @@ contract DataMarket{
         string gs;
         string data;
     }
+
+    modifier onlyOwner(uint256 _id) {
+        require(items[_id].owner == msg.sender, "Account is not the owner of this item.");
+        _;
+    }
     
+    modifier orderExists(uint256 _order, address _buyer) {
+        require(orders[msg.sender][_order].buyer == _buyer, "Order does Not Exist.");
+        _;
+    }
+
     mapping(uint256 => Item)public items;
     mapping(address => mapping(uint256 => Order)) public orders;
     mapping(address => uint256)public userOrders;
 
-    event List(string name, uint256 price);
+    event ListItem(address owner, uint256 itemId, string name, uint256 price);
+    event OrderCompleted(address owner, address buyer, uint256 itemId);
+
 
     function list(
         address payable _owner,
@@ -57,9 +70,14 @@ contract DataMarket{
         //save Item
         items[itemId] = item;
 
+        //emit event
+        emit ListItem(msg.sender, itemId, _name, _price);
+
         //increment itemId
         itemId += 1;
     }
+
+
 
     //Buying
     function buy(uint256 _id, string memory _gb) public payable{
@@ -84,35 +102,26 @@ contract DataMarket{
 
     }
 
+
+
     //setting Order variables
     function setOrderComplete(
-            address _owner, 
             address _buyer, 
+            uint256 _order,
             uint256 _id, 
             uint256 _complete, 
             string memory _gs, 
-            string memory _data) public {
+            string memory _data
+    ) public onlyOwner(_id) orderExists(_order,_buyer){
 
-        //Fetch item
-        Item memory item = items[_id];
+        //get order
+        Order storage order = orders[msg.sender][_order];
 
-        //get order that matches
-        uint256 len = userOrders[address(item.owner)];
+        order.complete = _complete;
+        order.gs = _gs;
+        order.data = _data;
 
-        for (uint256 i = 0; i <= len; i++) {
-            Order storage order = orders[_owner][i];
-            Item memory orderItem = order.item;
-
-            if(order.buyer == _buyer && orderItem.id == _id){
-                uint256 id = order.id;
-
-                orders[_owner][id].complete = _complete;
-                orders[_owner][id].gs = _gs;
-                orders[_owner][id].data = _data;
-
-                break;
-            }
-        }
+        emit OrderCompleted(msg.sender, _buyer, _id);
     }
 
 }

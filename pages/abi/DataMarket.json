@@ -9,6 +9,18 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "name",
         "type": "string"
@@ -20,7 +32,32 @@
         "type": "uint256"
       }
     ],
-    "name": "List",
+    "name": "ListItem",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "buyer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      }
+    ],
+    "name": "OrderCompleted",
     "type": "event"
   },
   {
@@ -284,13 +321,13 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_owner",
+        "name": "_buyer",
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "_buyer",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "_order",
+        "type": "uint256"
       },
       {
         "internalType": "uint256",
