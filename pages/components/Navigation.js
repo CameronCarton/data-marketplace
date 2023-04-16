@@ -1,17 +1,24 @@
 import { ethers } from 'ethers'
 
+
+
 const Navigation = ({account, setAccount}) => {
 
-const connectWallet = async () => {
-    const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
-    const account = ethers.utils.getAddress(accounts[0]);
-    setAccount(account);
-    console.log("connected wallet")
-}
+    //connects Ethereum Wallet from MetaMask
+    const connectWallet = async () => {
+        const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+        const account = ethers.utils.getAddress(accounts[0]);
+        setAccount(account);
+        console.log("CONNECTED ETHEREUM WALLET!")
+    }
+
+
+
     return(
     <nav class="navbar">
         <div class="navbar-container">
             <a href="https://nextjs.org" id="navbar-logo"> </a>
+
             <ul class="navbar-menu">
                 <li class="navbar-item">
                 <a href="https://nextjs.org" class="navbar-links">Marketplace</a>

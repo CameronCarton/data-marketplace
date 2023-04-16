@@ -72,7 +72,6 @@ const Section = ({account, items, dataMarket, togglePop, togglePop2}) => {
         const itemExtra = Array(extraLen).fill(0);
         
         setItemsExtra(itemExtra);
-        console.log(itemExtra);
         }
     }, [items2]);
 

@@ -7,7 +7,6 @@
         "price": "0.2",
         "information": "this is default information",
         "tags": "earthquake, seismic activity, geology, natural disasters, disaster response, earthquake prediction, seismic waves, plate tectonics, earthquake data, earthquake patterns",
-        "data": "QmWfHZJ5VdXa4xD3e9iM2dm2jfuGYqguVda1QCPbGgsn2K",
         "dataSample": "QmcagufavPVBe2upFmEVHoMfb1RRvqVLYLyWvJJM3KPUzx"
       },
       {
@@ -17,7 +16,6 @@
         "price": "3.14",
         "information": "this is default information",
         "tags": "gaming, gaming consoles, market analysis, consumer behavior, sales figures, market share, data-driven decisions, popularity, age groups, regions, industry insights",
-        "data": "Qmdg76RdGzhDi9CMLJnpXoNyThL7AcRbHDseB3SNP4XMmK",
         "dataSample": "QmZGsuc7EpmV81eVbA6Y4s2QdWVZbHXquSYCMLFGAuHaAQ"
       },
       {
@@ -27,7 +25,6 @@
         "price": "9",
         "information": "this is default information",
         "tags": "Honda, automotive industry, sales data, vehicle models, market share, consumer behavior, revenue, regional sales, time-series analysis, data-driven decisions, industry insights",
-        "data": "QmNejNqAMsif2vddKecQfznm9DUnVVSC7VPpS73PmoLYkj",
         "dataSample": "QmX6PT1SZGG9PQHW4CCJKWAzhjAKxp2U45tjveArD2Pbsx"
       },
       {
@@ -37,7 +34,6 @@
         "price": "0.006",
         "information": "this is default information",
         "tags": "NASDAQ, stock market, financial data, trading, market analysis, time-series analysis, stock prices, market trends",
-        "data": "QmbUQLrftBAyARnLLkitJUeJC6mLVE4siFBPiybwojtHPk",
         "dataSample": "QmT49vk3TwYDMQQ3ZbQuLFS5skJdyHx2esnJjEWU4uax7Q"
       }
       ,
@@ -48,7 +44,6 @@
         "price": "0.7765",
         "information": "this is default information",
         "tags": "NASDAQ, stock market, financial data, trading, market analysis, time-series analysis, stock prices, market trends",
-        "data": "QmUe38iQPPV1mP4dHa8KSJmouBpFPijEpUYvyEz7tenjeA",
         "dataSample": "QmVsaa86QpzuVtFWwAdpdrza8vcnnM5zkdL6z6SabWutJo"
       },
       {
@@ -58,7 +53,6 @@
         "price": "6",
         "information": "this is default information",
         "tags": "nba, athlete, health, fitness, human",
-        "data": "QmUe38iQPPV1mP4dHa8KSJmouBpFPijEpUYvyEz7tenjeA",
         "dataSample": "QmSEDzQZkpRvH2cBj3NfQ94PvakdXhVhZt7aRdLkuQwejY"
       },
       {
@@ -68,7 +62,6 @@
         "price": "8",
         "information": "this is default information",
         "tags": "tornado, wind, location, weather",
-        "data": "QmUe38iQPPV1mP4dHa8KSJmouBpFPijEpUYvyEz7tenjeA",
         "dataSample": "QmSVfNkaBsUVTCUVmjHYZALYk1atpxw1mHYUygrMExaGrH"
       },
       {
@@ -78,7 +71,6 @@
         "price": "1.34",
         "information": "this is default information",
         "tags": "youtube, spotify, music",
-        "data": "QmUe38iQPPV1mP4dHa8KSJmouBpFPijEpUYvyEz7tenjeA",
         "dataSample": "QmfXYupH2WoWHdJgquJp8jBkKMa5mZUkqvpfKQWMR6RWDt"
       }
     ]

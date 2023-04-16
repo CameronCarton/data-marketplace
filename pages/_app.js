@@ -27,11 +27,11 @@ function App() {
   const togglePop = async (item) => {
     setItem(item)
     toggle ? setToggle(false) : setToggle(true)
-    console.log("item selected page")
+    console.log("Loaded Item Page.")
   }
   function togglePop2 (){
     toggle2 ? setToggle2(false) : setToggle2(true)
-    console.log("list item page")
+    console.log("Loaded Item Listing Page.")
   }
 
 

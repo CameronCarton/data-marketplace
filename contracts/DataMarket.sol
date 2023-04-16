@@ -21,7 +21,6 @@ contract DataMarket{
         uint256 price;
         string information;
         string tags;
-        string data;
         string dataSample;
     }
 
@@ -50,11 +49,10 @@ contract DataMarket{
         uint256 _price,
         string memory _information,
         string memory _tags,
-        string memory _data,
         string memory _dataSample
     ) public {
         //create Item
-        Item memory item = Item(_owner,itemId,_name,_image,_category,_price,_information,_tags,_data,_dataSample);
+        Item memory item = Item(_owner,itemId,_name,_image,_category,_price,_information,_tags,_dataSample);
 
         //save Item
         items[itemId] = item;
