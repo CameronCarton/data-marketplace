@@ -8,7 +8,6 @@ import { create } from 'ipfs-http-client'
 const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, toggle, toggle2, setAccount}) => {
 
 
-    const itemsF = items
     const [items2, setItems2] = useState(null);
     const [itemsExtra, setItemsExtra] = useState(null);
     const [price, setPrice] = useState(0.0000);
@@ -20,7 +19,8 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
     const [ordersPage, setOrdersPage] = useState(false);
     const [startOrderPage, setStartOrderPage] = useState(false);
     const [order, setOrder] = useState(false);
-
+    const [pageHeader, setPageHeader] = useState("Marketplace");
+    const [page, setPage] = useState(0);
 
 
     //ipfs
@@ -106,18 +106,43 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
 
 
 
+    //loads the items in sets of 12
+    const itemsPerPageLoad = async (items) =>{
+        const itemsPerPage = 12;
+        const items_ = [];
+
+        if(itemsPerPage+(page*itemsPerPage) >= items.length){
+            for (var i=items.length-itemsPerPage+(itemsPerPage-(items.length%itemsPerPage)); i<items.length; i++){
+                const item = items[i];
+                items_.push(item);
+            }
+        }else{
+            for (var i=(page*itemsPerPage); i<itemsPerPage+(page*itemsPerPage); i++){
+                const item = items[i];
+                items_.push(item);
+            }
+        }
+        
+        setItems2(items_);
+    }
+
+
     //updates Items
     useEffect(() => {
-        setItems2(itemsF);
-    }, [itemsF]);
+        itemsPerPageLoad(items);
+        window.scrollTo(0, 0);
+        if(!account){
+            connectWallet();
+        }
+    }, [items,page]);
 
 
     //Creates grey "filler" item contrainers in the item grid
     useEffect(() => {
         if(items2!=null){
         const items2Len = items2.length;
-        const extraLen = 4 - items2Len % 4;
-        if(extraLen==4)extraLen=0;
+        const extraLen = 12 - items2Len % 12;
+        if(extraLen==12)extraLen=0;
         const itemExtra = Array(extraLen).fill(0);
         
         setItemsExtra(itemExtra);
@@ -135,13 +160,14 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
     //Submitting Search entry
     const handleSubmit = async (event) => {
         event.preventDefault(); 
+        setPageHeader("Results for... " + inputSearch);
 
         //get each word in the searched words
         const searchTerms = inputSearch.split(/[,\s]+/).map((term) => term.split(/\s+/)).flat();
 
         //filter items to search
         const filteredItems = await Promise.all(
-            itemsF.map(async (item) => {
+            items.map(async (item) => {
 
             //splits tags and compares for search
             const tags = item.tags.toLowerCase().split(',');
@@ -153,7 +179,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
             }
             })
         );
-        setItems2(filteredItems.filter(Boolean));
+        itemsPerPageLoad(filteredItems.filter(Boolean));
         setItemsWithOrders([]);
     };
 
@@ -162,11 +188,12 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
     //Submitting Search entry
     const MarketplaceReset = async () => {
         window.scrollTo(0, 0);
-        setItems2(itemsF);
+        itemsPerPageLoad(items);
         setOrdersPage(false);
         setPrice(0.0000);
         setPrice2(0.0000);
         setSelectedCategories(["Demographic","Financial","Geographic","Consumer behavior","Environmental","Social media","Medical","Other"]);
+        setPageHeader("Marketplace");
         setItemsWithOrders([]);
     };
 
@@ -177,6 +204,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
 
         setOrdersPage(false);
         window.scrollTo(0, 0);
+        setPageHeader("Your Listings");
 
         setPrice(0.0000);
         setPrice2(0.0000);
@@ -185,7 +213,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
         //filter items to if you are the owner
         const items2 = [];
         await Promise.all(
-            itemsF.map(async (item) => {
+            items.map(async (item) => {
                 const owner = await item.owner;
 
                 //item owner to match your account address
@@ -194,7 +222,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
                 }
             })
         );
-        setItems2(items2);
+        itemsPerPageLoad(items2);
     };
 
 
@@ -204,6 +232,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
 
         setOrdersPage(false);
         window.scrollTo(0, 0);
+        setPageHeader("Your Purchases");
 
         setPrice(0.0000);
         setPrice2(0.0000);
@@ -213,7 +242,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
         const items2 = [];
         const itemsWithOrders = [];
         await Promise.all(
-            itemsF.map(async (item) => {
+            items.map(async (item) => {
 
                 //get all items you have ordered
                 const completed = await dataMarket.ordersFulfilled(item.id, account);
@@ -230,7 +259,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
                }
             })
         );
-        setItems2(items2);
+        itemsPerPageLoad(items2);
         setItemsWithOrders(itemsWithOrders);
         console.log(itemsWithOrders);
     };
@@ -347,6 +376,14 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
 
 
 
+    //move item pages
+    const setPageValue = (val) => {
+        if(val<0)val=0;
+        setPage(val);
+    }
+
+
+
     //Disconnect Wallet
     const disconnectWallet = () => {
         setAccount(null);
@@ -364,23 +401,9 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
                 <div class="services-visualTop">
 
                     <h1>Discover the right Data for your needs</h1>
-                    <div class="search-container">
-
-                        <form onSubmit={handleSubmit}>
-                            <input
-                            type="text"
-                            placeholder="Search..."
-                            value={inputSearch}
-                            onChange={searchChange}
-                            />
-                            <button type="submit"><i class="fa fa-search"></i></button>
-                        </form>
-
-                    </div>
 
 
                     <div class="marketplace-container">
-
                     
                         {(toggle || toggle2 || startOrderPage) ?(
                             <></>
@@ -513,100 +536,146 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
                         )}
 
 
-                        {!ordersPage ?(
-                            <div class="grid-container">
-                                {items2 &&(
-                                    <>
-                                        {items2.map((item, i) => (
-                                            <>
-                                            <li class="listing-container" key={i} onClick={() => togglePop(item)}>
-                                                <div class="item-image2" id="item-image2">
-                                                    <img src={item.image} alt="ItemImage"></img>
-                                                </div>
-                                                <a class="listing-links">
+                        {!ordersPage && !toggle && !toggle2 && !startOrderPage ?(
+                            <>
+                                <div class="search-position-container">
+                                    <div class="search-container">
 
-                                                    {itemsWithOrders[i] && account != item.owner &&(
-                                                        <>
-                                                            <strong class="listing-price-container">Order Placed</strong>
-                                                        </>
-                                                    )}
+                                        <form onSubmit={handleSubmit}>
+                                            <input
+                                            type="text"
+                                            placeholder="Search..."
+                                            value={inputSearch}
+                                            onChange={searchChange}
+                                            />
+                                            <button type="submit"><i></i></button>
+                                        </form>
 
-                                                    <a class="listing-links2">
-                                                        <strong>{item.name}</strong>
-                                                        <p>{item.category}</p>
-                                                        {account != null && item.owner == account.toString() ?(
+                                    </div> 
+                                </div>
+                                 
+                                <div class="search-position-container" style={{top:"0px",height:"40px","text-align":"left",padding: "0px 0px 0px 0px", "padding-left":"40px"}}>
+                                    <u>{pageHeader}</u>
+                                </div>
+
+                                <div class="grid-container">
+                                    {items2 &&(
+                                        <>
+                                            {items2.map((item, i) => (
+                                                <>
+                                                <li class="listing-container" key={i} onClick={() => togglePop(item)}>
+                                                    <div class="item-image2" id="item-image2">
+                                                        <img src={item.image} alt="ItemImage"></img>
+                                                    </div>
+                                                    <a class="listing-links">
+
+                                                        {itemsWithOrders[i] && account != item.owner &&(
                                                             <>
-                                                                <strong class="listing2-price-container">Listed by You</strong>
-                                                            </>
-                                                        ):(
-                                                            <>
-                                                            <strong class="listing-price-container">{ethers.utils.formatUnits(item.price.toString(),'ether')} ETH</strong>
+                                                                <strong class="listing-price-container">Order Placed</strong>
                                                             </>
                                                         )}
+
+                                                        <a class="listing-links2">
+                                                            <strong>{item.name}</strong>
+                                                            <p>{item.category}</p>
+                                                            {account != null && item.owner == account.toString() ?(
+                                                                <>
+                                                                    <strong class="listing2-price-container">Listed by You</strong>
+                                                                </>
+                                                            ):(
+                                                                <>
+                                                                <strong class="listing-price-container">{ethers.utils.formatUnits(item.price.toString(),'ether')} ETH</strong>
+                                                                </>
+                                                            )}
+                                                        </a>
                                                     </a>
-                                                </a>
-                                            </li>
+                                                </li>
+                                                </>
+                                            ))}
+                                        </>
+                                    )}
+
+                                    
+                                    {itemsExtra &&(
+                                        <>
+                                        {itemsExtra.map((item, i) => (
+                                            <>
+                                            <div key={i} class="listing-container" style={{background: '#E2E2E2'}}></div>
                                             </>
                                         ))}
-                                    </>
-                                )}
-                                
-                                {itemsExtra &&(
-                                    <>
-                                    {itemsExtra.map((item, i) => (
-                                        <>
-                                        <div key={i} class="listing-container" style={{background: '#E2E2E2'}}></div>
                                         </>
-                                    ))}
-                                    </>
-                                )}
+                                    )}
                             
                             
-                            </div>
+                                </div>
+
+                                <div class="search-position-container" style={{top:"0px",height:"80px",padding: "0px 0px 0px 0px", "padding-left": "18.5%",
+                                                                                display: "flex", "flex-wrap": "wrap", "flex-direction": 
+                                                                                "row","justify-content" : "left"}}>
+
+                                    <div class="profile-button" onClick={() => setPageValue(page-1)} style={{border: "0px","max-width": "20%", "max-height": "40px","padding-left": "0px","z-index":"20"}}>
+                                            {(page+1-1).toString() + "  < Previous Page"}
+                                    </div>
+                                    <div class="listing-links2" style={{"text-align":"center", height: "100%", width:"5%", position:"relative",margin:"5px","padding-left":"120px", background: "rgba(0,0,0,0)","z-index":"10"}}>
+                                        <p>{(page+1).toString()}</p>
+                                    </div>
+                                    <div class="profile-button" onClick={() => setPageValue(page+1)} style={{border: "0px","max-width": "20%", "max-height": "40px","padding-left": "0px",left:"20px","z-index":"20"}}>
+                                        {"Next Page >  " + (page+1+1).toString()}
+                                    </div>
+                                </div>
+                            </>
                         ):(
-                            <div class="order-container">
-                                {allOrders &&(
-                                    <>
-                                        {allOrders.map((order, i) => (
+
+                            <>
+                                <div class="search-position-container" style={{top:"0px",height:"100px","text-align":"left",top:"2vh",padding: "40px 0px 0px 0px", "padding-left":"40px"}}>
+                                    <u>Orders</u>
+                                </div>
+
+
+                                <div class="order-container">
+                                    {allOrders &&(
                                         <>
-                                            <div class="order-button" key={i} onClick={() => startOrder(true, order)}>
-                                            
-                                                <p>Order for : 
-                                                    <strong>{((order.item).name).toString()}</strong>
-                                                </p>
-                                                <p>Ordered : 
-                                                        {new Date(Number(order.time.toString() + '000')).toLocaleDateString(
-                                                            undefined,
-                                                            {
-                                                            day: '2-digit',
-                                                            month: '2-digit',
-                                                            year: 'numeric',
-                                                            hour: 'numeric',
-                                                            minute: 'numeric',
-                                                            second: 'numeric',
-                                                            hour12: false
-                                                            }
-                                                        )}
-                                                </p>
-                                                <p>Order Placed by: 
-                                                    {(order.buyer).toString()}
-                                                </p>
-                                                {(order.complete).toString() == "1" ?(
-                                                    <>
-                                                        <strong class="order-status-container" style={{background:"#006AFF", color:"#FFFFFF", border: "2px solid #006AFF"}}>UNCOMPLETED</strong>
-                                                    </>
-                                                ):(
-                                                    <>
-                                                        <strong class="order-status-container" >COMPLETED</strong>
-                                                    </>
-                                                )}
+                                            {allOrders.map((order, i) => (
+                                            <>
+                                                <div class="order-button" key={i} onClick={() => startOrder(true, order)}>
                                                 
-                                            </div>
+                                                    <p>Order for : 
+                                                        <strong>{((order.item).name).toString()}</strong>
+                                                    </p>
+                                                    <p>Ordered : 
+                                                            {new Date(Number(order.time.toString() + '000')).toLocaleDateString(
+                                                                undefined,
+                                                                {
+                                                                day: '2-digit',
+                                                                month: '2-digit',
+                                                                year: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: 'numeric',
+                                                                second: 'numeric',
+                                                                hour12: false
+                                                                }
+                                                            )}
+                                                    </p>
+                                                    <p>Order Placed by: 
+                                                        {(order.buyer).toString()}
+                                                    </p>
+                                                    {(order.complete).toString() == "1" ?(
+                                                        <>
+                                                            <strong class="order-status-container" style={{background:"#006AFF", color:"#FFFFFF", border: "2px solid #006AFF"}}>UNCOMPLETED</strong>
+                                                        </>
+                                                    ):(
+                                                        <>
+                                                            <strong class="order-status-container" >COMPLETED</strong>
+                                                        </>
+                                                    )}
+                                                    
+                                                </div>
+                                            </>
+                                            ))}
                                         </>
-                                        ))}
-                                    </>
-                                )}
-                            </div>
+                                    )}
+                                </div>
+                            </>
                         )}
 
                     </div>
