@@ -59,23 +59,6 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
         setIsOwner(true);
 
-        //Creates a List of all the current unfulfilled orders to the item
-        const allOrders = [];
-        const userOrders = await dataMarket.userOrders(owner);
-
-        for (var i=1; i<=userOrders; i++){
-          const order_ = await dataMarket.orders(owner,i);
-          const completed = await order_.complete;
-          const order_item = order_.item;
-
-          //Order completed is 1 if the order exists but is not fulfilled
-          if((order_item.id).toString() == (item.id).toString() && (completed).toString()=="1"){
-            allOrders.push(order_);
-          }
-        }
-
-        setAllOrders(allOrders);
-
       }else{
 
         setIsOwner(false);
@@ -105,6 +88,8 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
     //When Buyer Places Order
     const buyItem = async () => {
 
+      startBuy(false);
+      try{
       // Diffie Hellman Key Exchange
       const crypto = require('crypto');
 
@@ -131,6 +116,10 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
       downloadCSV(JSON.stringify(b_key), "SECRET KEY _ " + (item.name).toString(), ".key");
 
       setHasBought(true);
+      togglePop();
+      }catch(err){
+        console.log("TRANSACTION DENIED!")
+      }
     }
 
 
@@ -138,6 +127,7 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
     //Downloading Data
     async function downloadFile(){
 
+      try{
       //Get the input Private Key Decryption File
       const fileSelector3 = document.getElementById('file-selector3');
       const file2 = fileSelector3.files[0];
@@ -209,7 +199,7 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
           downloadCSV(parsedData.data, (item.name).toString(), ".csv");
 
           }).catch((err) => {
-            console.error(err);
+            console.log("INCORRECT DECRYPTION KEY!");
           });
 
           console.log("Data Retrieved!");
@@ -220,7 +210,11 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
       //Read in File
       reader.readAsText(await file2);
+      startDownload(false);
 
+    }catch(err){
+      console.log("NO DECRYPTION KEY SELECTED!");
+    }
     };
 
 
@@ -255,19 +249,28 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
     };
 
 
+
+    //delete listing if you are the owner
+    const deleteListing = async () => {
+      const signer = await provider.getSigner();
+      let transaction = dataMarket.connect(signer).deleteItem(item.id);
+      const trans = await transaction;
+      togglePop();
+    }
+
   
-  //Fetch Details for item and orders
-  useEffect(() => {
-    fetchDetails();
-  },[hasBought])
+    //Fetch Details for item and orders
+    useEffect(() => {
+      fetchDetails();
+    },[hasBought])
 
 
 
-  //Start Buy Menu
-  const startBuy = (bool) => {
-    window.scrollTo(0, 0);
-    setStartBuyPage(bool);
-  }
+    //Start Buy Menu
+    const startBuy = (bool) => {
+      window.scrollTo(0, 0);
+      setStartBuyPage(bool);
+    }
 
 
 
@@ -332,7 +335,7 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
                           {ethers.utils.formatUnits(item.price.toString(), 'ether')} ETH
                         </strong> 
                     </div>
-                    <button class="item-buy" onClick={downloadFile}>Download</button>
+                    <button class="item-buy" onClick={deleteListing}>Delete Listing</button>
                   </div>
                 ):(
                   <></>
@@ -428,8 +431,8 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
             <div class="item-text-box-files" style={{ height: '10%', width: "60%", left: "70px"}}>
               <div class="item-text-box2-info" style={{ display: "inline-block"}}>
-
                 Reviews
+                
 
                 
 
@@ -445,14 +448,19 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
         {startBuyPage &&(
           <div class="itemPage">
-            <div class="item-details" style={{ "max-width":"800px", height: "20%", top: "100px"}}>
+            <div class="item-details" style={{ "max-width":"800px", height: "20%", 
+                                              top: "200px", "text-align":"center","justify-Content":"center",
+                                              "font-size":"1.5rem","padding-top":"100px"}}>
 
               <p>Confirm Purchase of</p>
 
-              <strong>{item.name}</strong>
+              <p>{item.name}</p>
 
-              <button class="profile-button" onClick={buyItem}>Proceed to Payment</button>
-              <button class="profile-button" onClick={() => startBuy(false)}>Return to Product page</button>
+              <p>{"for " + ethers.utils.formatUnits(item.price.toString(), 'ether') + " ETH"}</p>
+
+              <br/>
+              <button class="profile-button" onClick={buyItem} style={{"max-width":"80%", left:"0%"}}>Proceed to Payment</button>
+              <button class="profile-button" onClick={() => startBuy(false)} style={{"max-width":"80%", left:"0%"}}>Return to Product page</button>
 
             </div>
           </div>
@@ -462,16 +470,17 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
         {startDownloadPage &&(
           <div class="itemPage">
-            <div class="item-details" style={{ "max-width":"800px", height: "20%", top: "100px"}}>
-
-              <p>Download</p>
-
-              <strong>{(item.owner).toString()}</strong>
+            <div class="item-details" style={{ "max-width":"800px", height: "20%", 
+                                              top: "200px", "text-align":"center","justify-Content":"center",
+                                              "font-size":"1.5rem","padding-top":"100px"}}>
 
 
-              <div class="item-text-box2-files">
+              <strong>{(item.name).toString()}</strong>
 
-                Data-
+
+              <div class="item-text-box2-files" style={{"left":"25%","text-align":"center","justify-Content":"center"}}>
+
+                Select your Decryption Key-
 
                 <input type="file" id="file-selector3" />
                 <label htmlFor="file-selector" class="button"></label>
@@ -479,8 +488,8 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
               </div>
 
 
-              <button class="profile-button" onClick={downloadFile}>Download</button>
-              <button class="profile-button" onClick={() => startDownload(false)}>Return to Product page</button>
+              <button class="profile-button" onClick={downloadFile} style={{"max-width":"80%", left:"0%"}}>Download</button>
+              <button class="profile-button" onClick={() => startDownload(false)} style={{"max-width":"80%", left:"0%"}}>Return to Product page</button>
 
             </div>
           </div>

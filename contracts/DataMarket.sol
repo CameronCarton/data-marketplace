@@ -15,7 +15,7 @@ contract DataMarket{
 
     struct Item {
         address payable owner;
-        uint id;
+        uint256 id;
         string name;
         string image;
         string category;
@@ -23,6 +23,7 @@ contract DataMarket{
         string information;
         string tags;
         string dataSample;
+        uint256 stars;
     }
 
     struct Order{
@@ -36,8 +37,20 @@ contract DataMarket{
         string data;
     }
 
+    struct Review {
+        address buyer;
+        uint256 id;
+        uint256 stars;
+        string text;
+    }
+
     modifier onlyOwner(uint256 _id) {
         require(items[_id].owner == msg.sender, "Account is not the owner of this item.");
+        _;
+    }
+
+    modifier notOwner(uint256 _id) {
+        require(items[_id].owner != msg.sender, "Account is the owner of this item.");
         _;
     }
     
@@ -46,10 +59,19 @@ contract DataMarket{
         _;
     }
 
+    modifier starsValid(uint256 _stars) {
+        require(_stars >= 1 && _stars <= 5, "Stars given are not valid.");
+        _;
+    }
+
     mapping(uint256 => Item)public items;
+
     mapping(address => mapping(uint256 => Order)) public orders;
     mapping(uint256 => mapping(address => uint256)) public ordersFulfilled;
     mapping(address => uint256)public userOrders;
+
+    mapping(uint256 => uint256)public itemReviewAmount;
+    mapping(uint256 => mapping(uint256 => Review)) public reviews;
 
     event ListItem(address owner, uint256 itemId, string name, uint256 price);
     event OrderCompleted(address owner, address buyer, uint256 itemId);
@@ -66,7 +88,7 @@ contract DataMarket{
         string memory _dataSample
     ) public {
         //create Item
-        Item memory item = Item(_owner,itemId,_name,_image,_category,_price,_information,_tags,_dataSample);
+        Item memory item = Item(_owner,itemId,_name,_image,_category,_price,_information,_tags,_dataSample,0);
 
         //save Item
         items[itemId] = item;
@@ -76,6 +98,19 @@ contract DataMarket{
 
         //increment itemId
         itemId += 1;
+    }
+
+
+
+    function deleteItem(
+        uint256 _itemId
+    ) public onlyOwner(_itemId){
+        //create Empty Item
+        Item memory item = Item(items[_itemId].owner,0,"","","",0,"","","",0);
+
+        //overwrite Item in position
+        items[_itemId] = item;
+
     }
 
 
@@ -101,6 +136,38 @@ contract DataMarket{
         //save order
         orders[address(item.owner)][newOrderAmount] = order;
         ordersFulfilled[item.id][msg.sender] = 1;
+    }
+
+
+
+    //Post Review
+    function postReview(
+        uint256 _id, 
+        uint256 _order,
+        uint256 _stars,
+        string memory _text
+    ) public notOwner(_id) orderExists(_order,msg.sender) starsValid(_stars){
+
+        //increment amount of reviews for item
+        uint256 newReviewAmount = itemReviewAmount[_id] + 1;
+        itemReviewAmount[_id] = newReviewAmount;
+
+
+        //create Review
+        Review memory review = Review(msg.sender,_id,_stars,_text);
+
+        //save Review
+        reviews[_id][newReviewAmount] = review;
+
+
+        //combine stars for item rating
+        uint256 newStarRating = 0;
+        for(uint256 i=1; i<=newReviewAmount; i++){
+            newStarRating += reviews[_id][i].stars;
+        }
+
+        //average of all review scores
+        items[_id].stars = (newStarRating/newReviewAmount);
     }
 
 

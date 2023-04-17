@@ -534,6 +534,21 @@
     border-radius: 8px;
     position: relative;
   }
+  .profile3-button{
+    margin-top:5px;
+    width: 80%;
+    left: 10%;
+    justify-content: left;
+    align-items: left;
+    padding: 5px;
+    text-align: center;
+    font-size: 1.2rem;
+    color: rgb(211, 211, 211);
+    background: rgb(255, 255, 255);
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 8px;
+    position: relative;
+  }
 
   .profile-id-display{
     width: 94%;

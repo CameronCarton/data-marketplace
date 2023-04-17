@@ -149,6 +149,7 @@ const ListPage = ({provider, account, dataMarket, togglePop2 }) => {
     //Listing item
     const listItem = async () => {
       
+      try{
       //Upload file
       const imageLink = await uploadFileToIPFS(imageFile,1)
       console.log("Image File uploaded at: " + imageLink);
@@ -171,6 +172,9 @@ const ListPage = ({provider, account, dataMarket, togglePop2 }) => {
       )
       await transaction.wait()
       console.log("LISTED ITEM: " + inputName);
+      }catch(err){
+        console.log("FILL IN ALL * SECTIONS TO LIST!");
+      }
     }
 
 
@@ -199,11 +203,11 @@ const ListPage = ({provider, account, dataMarket, togglePop2 }) => {
 
             <div class="item-overview2">
 
-              <div class="item-text-box2">Item Name
+              <div class="item-text-box2">Item Name *
                 <input class="item-text-box" type="text" placeholder="" onChange={nameChange}/>
               </div>
 
-              <div class="item-text-box2">Price (ETH)
+              <div class="item-text-box2">Price (ETH) *
                 <input
                   class="item-text-box-price"
                   type="number"
@@ -216,7 +220,7 @@ const ListPage = ({provider, account, dataMarket, togglePop2 }) => {
 
 
 
-              <div class="item-text-box2">Category 
+              <div class="item-text-box2">Category * 
                 <div class="category">
                   <button onClick={() => toggleCategory()}>{selectedCategory}</button>
                     {categoryToggle &&(
@@ -235,13 +239,13 @@ const ListPage = ({provider, account, dataMarket, togglePop2 }) => {
                   </div>
 
 
-                  <div class="item-text-box2-files">Image-
+                  <div class="item-text-box2-files">Image * -
                     <input type="file" id="file-selector" accept="image/jpeg" />
                     <label htmlFor="file-selector" class="button"></label>
                   </div>
 
 
-                  <div class="item-text-box2-files">Data-
+                  <div class="item-text-box2-files">Data * -
                     <input type="file" id="file-selector2" accept="text/*" />
                     <label htmlFor="file-selector" class="button"></label>
 

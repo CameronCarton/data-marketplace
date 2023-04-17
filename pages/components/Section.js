@@ -21,6 +21,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
     const [order, setOrder] = useState(false);
     const [pageHeader, setPageHeader] = useState("Marketplace");
     const [page, setPage] = useState(0);
+    const [maxPage, setMaxPage] = useState(false);
 
 
     //ipfs
@@ -116,11 +117,13 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
                 const item = items[i];
                 items_.push(item);
             }
+            setMaxPage(true);
         }else{
             for (var i=(page*itemsPerPage); i<itemsPerPage+(page*itemsPerPage); i++){
                 const item = items[i];
                 items_.push(item);
             }
+            setMaxPage(false);
         }
         
         setItems2(items_);
@@ -129,7 +132,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
 
     //updates Items
     useEffect(() => {
-        itemsPerPageLoad(items);
+        if(items!=null)itemsPerPageLoad(items);
         window.scrollTo(0, 0);
         if(!account){
             connectWallet();
@@ -188,6 +191,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
     //Submitting Search entry
     const MarketplaceReset = async () => {
         window.scrollTo(0, 0);
+        setPage(0);
         itemsPerPageLoad(items);
         setOrdersPage(false);
         setPrice(0.0000);
@@ -204,6 +208,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
 
         setOrdersPage(false);
         window.scrollTo(0, 0);
+        setPage(0);
         setPageHeader("Your Listings");
 
         setPrice(0.0000);
@@ -236,6 +241,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
 
         setPrice(0.0000);
         setPrice2(0.0000);
+        setPage(0);
         setSelectedCategories(["Demographic","Financial","Geographic","Consumer behavior","Environmental","Social media","Medical","Other"]);
 
         //filter items to if you have an order
@@ -278,65 +284,64 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
         //Reading in File and Completing Sale
         reader.addEventListener('load', async (event) => {
   
-          //Converting file to JSON
-          const csv = Papa.parse(event.target.result, { header: true });
-          const dataFile = JSON.stringify(csv);
-  
-  
-  
-          // Diffie Hellman Key Exchange
-          const crypto = require('crypto');
-  
-          //Getting Prime and Generator from modp15
-          const seller_key = crypto.getDiffieHellman('modp15');
-          seller_key.generateKeys();
-          const gs_key = seller_key.getPublicKey('hex');
-          
-          //Retrieving Buyer Public key stored in Order
-          const gb = order.gb;
-  
-          //Creating the main Secret Key (Symmetric Key for Encrypting and Decrypting)
-          const secretKey = seller_key.computeSecret(Buffer.from(gb, 'hex'),null,'hex');
-  
-          //Decodes SecretKey from a Uint8Array to Hexadecimal
-          const secretDecode = new TextDecoder('utf8').decode(secretKey);
-  
-  
-  
-          //Encrypting Data with AES (using Secret Key)
-          var AES = require("crypto-js/aes");
-          const data = AES.encrypt(
-            dataFile,
-            secretDecode);
-  
+            //Converting file to JSON
+            const csv = Papa.parse(event.target.result, { header: true });
+            const dataFile = JSON.stringify(csv);
+    
+    
+    
+            // Diffie Hellman Key Exchange
+            const crypto = require('crypto');
+    
+            //Getting Prime and Generator from modp15
+            const seller_key = crypto.getDiffieHellman('modp15');
+            seller_key.generateKeys();
+            const gs_key = seller_key.getPublicKey('hex');
             
+            //Retrieving Buyer Public key stored in Order
+            const gb = order.gb;
+    
+            //Creating the main Secret Key (Symmetric Key for Encrypting and Decrypting)
+            const secretKey = seller_key.computeSecret(Buffer.from(gb, 'hex'),null,'hex');
+    
+            //Decodes SecretKey from a Uint8Array to Hexadecimal
+            const secretDecode = new TextDecoder('utf8').decode(secretKey);
+    
   
-          //Uploading Encrypted Data to IPFS
-          const dataLink = await uploadFileToIPFS(data.toString(),2)
-          console.log("Data File uploaded at: https://ipfs.io/ipfs/" + dataLink);
   
-  
-          //Completing transaction with Smart Contract
-          const buyerAddress = ethers.utils.getAddress(buyer);
-          const completed = 2;
-          const dataLocation = dataLink;
-          const itemID = parseInt((order.item).id);
-  
-          //Seller public key (gs_key) is stored in Smart Contract
-          const signer = await provider.getSigner();
-          let transaction = dataMarket.connect(signer).setOrderComplete(buyerAddress, 
-                                                                        order.id,
-                                                                        itemID, 
-                                                                        completed, 
-                                                                        gs_key, 
-                                                                        dataLocation);
-          await transaction;
-  
+            //Encrypting Data with AES (using Secret Key)
+            var AES = require("crypto-js/aes");
+            const data = AES.encrypt(
+                dataFile,
+                secretDecode);
+    
+                
+    
+            //Uploading Encrypted Data to IPFS
+            const dataLink = await uploadFileToIPFS(data.toString(),2)
+            console.log("Data File uploaded at: https://ipfs.io/ipfs/" + dataLink);
+    
+    
+            //Completing transaction with Smart Contract
+            const buyerAddress = ethers.utils.getAddress(buyer);
+            const completed = 2;
+            const dataLocation = dataLink;
+            const itemID = parseInt((order.item).id);
+    
+            //Seller public key (gs_key) is stored in Smart Contract
+            const signer = await provider.getSigner();
+            let transaction = dataMarket.connect(signer).setOrderComplete(buyerAddress, 
+                                                                            order.id,
+                                                                            itemID, 
+                                                                            completed, 
+                                                                            gs_key, 
+                                                                            dataLocation);
+            await transaction;
+            startOrder(false, account);
         });
   
         //reads in file
         reader.readAsText(await file2);
-  
     }
 
 
@@ -379,6 +384,7 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
     //move item pages
     const setPageValue = (val) => {
         if(val<0)val=0;
+        if(maxPage && val > page)val=page;
         setPage(val);
     }
 
@@ -613,15 +619,29 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
                                                                                 display: "flex", "flex-wrap": "wrap", "flex-direction": 
                                                                                 "row","justify-content" : "left"}}>
 
-                                    <div class="profile-button" onClick={() => setPageValue(page-1)} style={{border: "0px","max-width": "20%", "max-height": "40px","padding-left": "0px","z-index":"20"}}>
-                                            {(page+1-1).toString() + "  < Previous Page"}
-                                    </div>
+                                    { page > 0 ?(
+                                        <div class="profile-button" onClick={() => setPageValue(page-1)} style={{border: "0px","max-width": "20%", "max-height": "40px","padding-left": "0px","z-index":"20"}}>
+                                                {(page+1-1).toString() + "  < Previous Page"}
+                                        </div>
+                                    ):(
+                                        <div class="profile3-button" onClick={() => setPageValue(page-1)} style={{border: "0px","max-width": "20%", "max-height": "40px","padding-left": "0px","z-index":"20"}}>
+                                                {(page+1-1).toString() + "  < Previous Page"}
+                                        </div>
+                                    )}
+                                    
                                     <div class="listing-links2" style={{"text-align":"center", height: "100%", width:"5%", position:"relative",margin:"5px","padding-left":"120px", background: "rgba(0,0,0,0)","z-index":"10"}}>
                                         <p>{(page+1).toString()}</p>
                                     </div>
-                                    <div class="profile-button" onClick={() => setPageValue(page+1)} style={{border: "0px","max-width": "20%", "max-height": "40px","padding-left": "0px",left:"20px","z-index":"20"}}>
-                                        {"Next Page >  " + (page+1+1).toString()}
-                                    </div>
+
+                                    { maxPage == false ?(
+                                        <div class="profile-button" onClick={() => setPageValue(page+1)} style={{border: "0px","max-width": "20%", "max-height": "40px","padding-left": "0px",left:"20px","z-index":"20"}}>
+                                            {"Next Page >  " + (page+1+1).toString()}
+                                        </div>
+                                    ):(
+                                        <div class="profile3-button" onClick={() => setPageValue(page+1)} style={{border: "0px","max-width": "20%", "max-height": "40px","padding-left": "0px",left:"20px","z-index":"20"}}>
+                                            {"Next Page >  " + (page+1+1).toString()}
+                                        </div>
+                                    )}
                                 </div>
                             </>
                         ):(
@@ -684,15 +704,17 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
 
             {startOrderPage &&(
                 <div class="itemPage">
-                    <div class="item-details" style={{ "max-width":"800px", height: "20%", top: "100px"}}>
+                    <div class="item-details" style={{ "max-width":"800px", height: "20%", 
+                                              top: "200px", "text-align":"center","justify-Content":"center",
+                                              "font-size":"1.5rem","padding-top":"100px"}}>
 
-                    <p>Complete Sale to</p>
+                    <p>Complete Sale of</p>
 
-                    <strong>{(order.buyer).toString()}</strong>
+                    <strong>{((order.item).name).toString()}</strong>
 
-                    <div class="item-text-box2-files">
+                    <div class="item-text-box2-files" style={{"left":"25%","text-align":"center","justify-Content":"center"}}>
                         
-                        Data-
+                        Select Data to Send-
 
                         <input type="file" id="file-selector2" accept="text/*" />
                         <label htmlFor="file-selector" class="button"></label>
@@ -700,8 +722,8 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
                     </div>
 
                         
-                    <button class="profile-button" onClick={() => acceptOrder(order.buyer)}>Complete Order</button>
-                    <button class="profile-button" onClick={() => startOrder(false, account)}>Return to Product page</button>
+                    <button class="profile-button" onClick={() => acceptOrder(order.buyer)} style={{"max-width":"80%", left:"0%"}}>Complete Order</button>
+                    <button class="profile-button" onClick={() => startOrder(false, account)} style={{"max-width":"80%", left:"0%"}}>Return to Product page</button>
 
                     </div>
                 </div>
