@@ -1,10 +1,11 @@
 import { ethers } from 'ethers'
 import React from 'react'
 import { useEffect, useState } from 'react'
+import Papa from 'papaparse';
+import { create } from 'ipfs-http-client'
 
 
-
-const Section = ({account, items, dataMarket, togglePop, togglePop2}) => {
+const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, toggle, toggle2, setAccount}) => {
 
 
     const itemsF = items
@@ -14,6 +15,53 @@ const Section = ({account, items, dataMarket, togglePop, togglePop2}) => {
     const [price2, setPrice2] = useState(0.0000);
     const [selectedCategories, setSelectedCategories] = useState(["Demographic","Financial","Geographic","Consumer behavior","Environmental","Social media","Medical","Other"]);
     const [inputSearch, setInputSearch] = useState('');
+    const [itemsWithOrders, setItemsWithOrders] = useState([]);
+    const [allOrders, setAllOrders] = useState([]);
+    const [ordersPage, setOrdersPage] = useState(false);
+    const [startOrderPage, setStartOrderPage] = useState(false);
+    const [order, setOrder] = useState(false);
+
+
+
+    //ipfs
+    const projectId = "2M3RsTdrt2xMd2SUInpHJf7JDlh";
+    const projectSecret = "37549890a23ea362509f8517bf1bc14c";
+    const authorization = "Basic " + btoa(projectId + ":" + projectSecret);
+    const ipfs = create({
+      url: "https://ipfs.infura.io:5001/api/v0",
+      headers:{
+        authorization
+      }
+    })
+
+
+
+    //ipfs upload
+    const uploadFileToIPFS = async (file, type) => {
+
+      //upload
+      console.log("Beginning Upload to IPFS...")
+      const fileLink = await ipfs.add(file);
+
+      //image files
+      if(type==1)
+      return "https://ipfs.io/ipfs/"+fileLink.path;
+
+      //data files
+      if(type==2)
+      return fileLink.path;
+    };
+
+
+
+    //connects Ethereum Wallet from MetaMask
+    const connectWallet = async () => {
+        const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+        const account = ethers.utils.getAddress(accounts[0]);
+        setAccount(account);
+        console.log("CONNECTED ETHEREUM WALLET!")
+    }
+
 
 
     //filter prices
@@ -69,6 +117,7 @@ const Section = ({account, items, dataMarket, togglePop, togglePop2}) => {
         if(items2!=null){
         const items2Len = items2.length;
         const extraLen = 4 - items2Len % 4;
+        if(extraLen==4)extraLen=0;
         const itemExtra = Array(extraLen).fill(0);
         
         setItemsExtra(itemExtra);
@@ -105,43 +154,204 @@ const Section = ({account, items, dataMarket, togglePop, togglePop2}) => {
             })
         );
         setItems2(filteredItems.filter(Boolean));
+        setItemsWithOrders([]);
+    };
+
+
+
+    //Submitting Search entry
+    const MarketplaceReset = async () => {
+        window.scrollTo(0, 0);
+        setItems2(itemsF);
+        setOrdersPage(false);
+        setPrice(0.0000);
+        setPrice2(0.0000);
+        setSelectedCategories(["Demographic","Financial","Geographic","Consumer behavior","Environmental","Social media","Medical","Other"]);
+        setItemsWithOrders([]);
     };
 
 
 
     //filter to your listings only
     const yourListings = async () => {
-        //filter items to only matching your address
-        const filteredItems = await Promise.all(
+
+        setOrdersPage(false);
+        window.scrollTo(0, 0);
+
+        setPrice(0.0000);
+        setPrice2(0.0000);
+        setSelectedCategories(["Demographic","Financial","Geographic","Consumer behavior","Environmental","Social media","Medical","Other"]);
+
+        //filter items to if you are the owner
+        const items2 = [];
+        await Promise.all(
             itemsF.map(async (item) => {
                 const owner = await item.owner;
 
                 //item owner to match your account address
                 if(owner.toString() == account.toString()){
-                    return item;
+                    items2.push(item);
                 }
             })
         );
-        setItems2(filteredItems.filter(Boolean));
+        setItems2(items2);
     };
 
 
 
     //filter to your purchases only
     const yourPurchases = async () => {
-        //filter items to if you have an order
-        const filteredItems = await Promise.all(
-            itemsF.map(async (item) => {
-                const order = await dataMarket.orders(account,item.id);
 
-                //checking if the order is set or not
-                if(order.toString()!="0,0x0000000000000000000000000000000000000000,0,,,,0,,,,"){
-                    return item;
-                }
+        setOrdersPage(false);
+        window.scrollTo(0, 0);
+
+        setPrice(0.0000);
+        setPrice2(0.0000);
+        setSelectedCategories(["Demographic","Financial","Geographic","Consumer behavior","Environmental","Social media","Medical","Other"]);
+
+        //filter items to if you have an order
+        const items2 = [];
+        const itemsWithOrders = [];
+        await Promise.all(
+            itemsF.map(async (item) => {
+
+                //get all items you have ordered
+                const completed = await dataMarket.ordersFulfilled(item.id, account);
+
+                //Order completed is 1 if the order exists and is 2 if fulfilled
+                if(completed.toString() == "1" || completed.toString() == "2"){
+                   if(completed.toString() == "2"){
+                       itemsWithOrders.push(false);
+                   }
+                   if(completed.toString() == "1"){
+                       itemsWithOrders.push(true);
+                   }
+                   items2.push(item);
+               }
             })
         );
-        setItems2(filteredItems.filter(Boolean));
+        setItems2(items2);
+        setItemsWithOrders(itemsWithOrders);
+        console.log(itemsWithOrders);
     };
+
+
+
+    //When Seller Accepts Order
+    const acceptOrder = async (buyer) => {
+
+        //Retrieve Input Data File (to send to buyer)
+        const fileSelector2 = document.getElementById('file-selector2');
+        const file2 = fileSelector2.files[0];
+        const reader = new FileReader();
+        
+    
+        //Reading in File and Completing Sale
+        reader.addEventListener('load', async (event) => {
+  
+          //Converting file to JSON
+          const csv = Papa.parse(event.target.result, { header: true });
+          const dataFile = JSON.stringify(csv);
+  
+  
+  
+          // Diffie Hellman Key Exchange
+          const crypto = require('crypto');
+  
+          //Getting Prime and Generator from modp15
+          const seller_key = crypto.getDiffieHellman('modp15');
+          seller_key.generateKeys();
+          const gs_key = seller_key.getPublicKey('hex');
+          
+          //Retrieving Buyer Public key stored in Order
+          const gb = order.gb;
+  
+          //Creating the main Secret Key (Symmetric Key for Encrypting and Decrypting)
+          const secretKey = seller_key.computeSecret(Buffer.from(gb, 'hex'),null,'hex');
+  
+          //Decodes SecretKey from a Uint8Array to Hexadecimal
+          const secretDecode = new TextDecoder('utf8').decode(secretKey);
+  
+  
+  
+          //Encrypting Data with AES (using Secret Key)
+          var AES = require("crypto-js/aes");
+          const data = AES.encrypt(
+            dataFile,
+            secretDecode);
+  
+            
+  
+          //Uploading Encrypted Data to IPFS
+          const dataLink = await uploadFileToIPFS(data.toString(),2)
+          console.log("Data File uploaded at: https://ipfs.io/ipfs/" + dataLink);
+  
+  
+          //Completing transaction with Smart Contract
+          const buyerAddress = ethers.utils.getAddress(buyer);
+          const completed = 2;
+          const dataLocation = dataLink;
+          const itemID = parseInt((order.item).id);
+  
+          //Seller public key (gs_key) is stored in Smart Contract
+          const signer = await provider.getSigner();
+          let transaction = dataMarket.connect(signer).setOrderComplete(buyerAddress, 
+                                                                        order.id,
+                                                                        itemID, 
+                                                                        completed, 
+                                                                        gs_key, 
+                                                                        dataLocation);
+          await transaction;
+  
+        });
+  
+        //reads in file
+        reader.readAsText(await file2);
+  
+    }
+
+
+
+    // Getting all orders for an account
+    const ordersPageStart = async (bool) => {
+        window.scrollTo(0, 0);
+
+        //not very efficient code but it will work on a small scale application
+        //get all orders
+        const allOrders = [];
+        const allUserOrders = await dataMarket.userOrders(account);
+
+
+        for(let i=1; i <= allUserOrders; i++){
+            //getting all orders for items that match the account       
+            const order = await dataMarket.orders(account, i);
+
+            if((order.complete).toString() == "1" || (order.complete).toString() == "2"){
+                allOrders.push(order);
+            }
+            
+        }
+
+        setAllOrders(allOrders);
+        setOrdersPage(bool);
+    }
+
+
+
+    //Start Order Menu
+    const startOrder = (bool, order) => {
+        window.scrollTo(0, 0);
+        setOrder(order);
+        setStartOrderPage(bool);
+    }
+
+
+
+    //Disconnect Wallet
+    const disconnectWallet = () => {
+        setAccount(null);
+        console.log("DISCONNECTED ETHEREUM WALLET!")
+    }
 
 
 
@@ -170,144 +380,264 @@ const Section = ({account, items, dataMarket, togglePop, togglePop2}) => {
 
 
                     <div class="marketplace-container">
-                        <div class="filter-container">
+
+                    
+                        {(toggle || toggle2 || startOrderPage) ?(
+                            <></>
+                        ):(
+                            <nav class="navbar">
+                                <div class="navbar-container">
+                                    <a id="navbar-logo"> </a>
+
+                                    <ul class="navbar-menu">
+
+                                        <li class="navbar-item">
+                                            <a class="navbar-links" onClick={MarketplaceReset} >Marketplace</a>
+                                        </li>
+
+                                        {account ? (
+                                            <>
+                                                <li class="navbar-item">
+                                                    <a class="navbar-links" onClick={yourPurchases}>Your Purchases</a>
+                                                </li>
+
+                                                <li class="navbar-item">
+                                                    <a class="navbar-links" onClick={yourListings}>Your Listings</a>
+                                                </li>
+
+                                            </>
+                                        ):(
+                                            <div id="wallet-container">
+                                                <button id="connect-wallet-button" onClick={connectWallet}>Connect Wallet</button>
+                                                <div id="message-container"></div>
+                                            </div>
+                                        )}
+                                        
+                                    </ul>
+                                </div>
+                            </nav>
+                        )}
+                        
+
+                        {!ordersPage &&(
+                            <div class="filter-container">
 
 
-                            <div class="filter-containerText">
-                                <p>Filters</p>
-                            </div>
-
-
-                            <div class="filter-container2">
-
-                                <div class="filter-container3">
-                                    Min Price
-                                    <input
-                                        class="item-text-box-price2"
-                                        type="number"
-                                        step="0.0001"
-                                        min="0.0001"
-                                        value={price}
-                                        onChange={handlePriceChange}
-                                    />
+                                <div class="filter-containerText">
+                                    <p>Filters</p>
                                 </div>
 
-                                <div class="filter-container3">
-                                    Max Price
-                                    <input
-                                        class="item-text-box-price2"
-                                        type="number"
-                                        step="0.0001"
-                                        min="0.0001"
-                                        value={price2}
-                                        onChange={handlePrice2Change}
-                                    />
-                                </div>
 
-                            </div>
+                                <div class="filter-container2">
 
-
-                            <div class="filter-container2">
-                                
-                                <div class="filter-container4">
-                                    Categories
-                                    <div class="filter-container5">
-                                        <button class="filter-button" data-category="Demographic" onClick={() => toggleCategory("Demographic")}>Demographic</button>
-                                        <button class="filter-button" data-category="Financial" onClick={() => toggleCategory("Financial")}>Financial</button>
-                                        <button class="filter-button" data-category="Geographic" onClick={() => toggleCategory("Geographic")}>Geographic</button>
-                                        <button class="filter-button" data-category="Consumer behavior" onClick={() => toggleCategory("Consumer behavior")}>Consumer</button>
-                                        <button class="filter-button" data-category="Environmental" onClick={() => toggleCategory("Environmental")}>Environmental</button>
-                                        <button class="filter-button" data-category="Social media" onClick={() => toggleCategory("Social media")}>Social media</button>
-                                        <button class="filter-button" data-category="Medical" onClick={() => toggleCategory("Medical")}>Medical</button>
-                                        <button class="filter-button" data-category="Other" onClick={() => toggleCategory("Other")}>Other</button>
+                                    <div class="filter-container3">
+                                        Min Price
+                                        <input
+                                            class="item-text-box-price2"
+                                            type="number"
+                                            step="0.0001"
+                                            min="0.0001"
+                                            value={price}
+                                            onChange={handlePriceChange}
+                                        />
                                     </div>
+
+                                    <div class="filter-container3">
+                                        Max Price
+                                        <input
+                                            class="item-text-box-price2"
+                                            type="number"
+                                            step="0.0001"
+                                            min="0.0001"
+                                            value={price2}
+                                            onChange={handlePrice2Change}
+                                        />
+                                    </div>
+
                                 </div>
+
+
+                                <div class="filter-container2">
+                                    
+                                    <div class="filter-container4">
+                                        Categories
+                                        <div class="filter-container5">
+                                            <button class="filter-button" data-category="Demographic" onClick={() => toggleCategory("Demographic")}>Demographic</button>
+                                            <button class="filter-button" data-category="Financial" onClick={() => toggleCategory("Financial")}>Financial</button>
+                                            <button class="filter-button" data-category="Geographic" onClick={() => toggleCategory("Geographic")}>Geographic</button>
+                                            <button class="filter-button" data-category="Consumer behavior" onClick={() => toggleCategory("Consumer behavior")}>Consumer</button>
+                                            <button class="filter-button" data-category="Environmental" onClick={() => toggleCategory("Environmental")}>Environmental</button>
+                                            <button class="filter-button" data-category="Social media" onClick={() => toggleCategory("Social media")}>Social media</button>
+                                            <button class="filter-button" data-category="Medical" onClick={() => toggleCategory("Medical")}>Medical</button>
+                                            <button class="filter-button" data-category="Other" onClick={() => toggleCategory("Other")}>Other</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="filter-containerText">
+                                    <button class="apply-button" onClick={handleSubmit}>Apply</button>
+                                </div>
+
 
                             </div>
-
-
-                            <div class="filter-containerText">
-                                <button class="apply-button" onClick={handleSubmit}>Apply</button>
-                            </div>
-
-
-                        </div>
-
-
-                        {account &&(
-                        <div class="profile-container">
-                            <div class="profile-containerImage">
-                                <div class="profile-image" id="profile-image">
-                                    <img src="https://ipfs.io/ipfs/QmZYW9Gh5Yz7wj15yqU9y9WhaWn9C7hMPsvQ1Xovk4hBVH" alt="Profile"></img>
-                                </div> 
-                            </div>
-                            <div class="profile-container2">
-                                <div class="profile-id-display">
-                                {account.slice(0,6) + '...' + account.slice(38,42)}
-                                </div>
-
-                                <div class="profile-button" onClick={togglePop2}>
-                                    Create a Listing
-                                </div>
-                                <div class="profile-button" onClick={yourListings}>
-                                    Your Listings
-                                </div>
-                                <div class="profile-button" onClick={yourPurchases}>
-                                    Your Purchases
-                                </div>
-                                <div class="profile-button" onClick={handleSubmit}>
-                                    All Listings
-                                </div>
-                            </div>
-                        </div>
                         )}
 
 
-                        <div class="grid-container">
-                            {items2 &&(
-                                <>
-                                    {items2.map((item, i) => (
+                        {account &&(
+                            <div class="profile-container">
+                                <div class="profile-containerImage">
+                                    <div class="profile-image" id="profile-image">
+                                        <img src="https://ipfs.io/ipfs/QmZYW9Gh5Yz7wj15yqU9y9WhaWn9C7hMPsvQ1Xovk4hBVH" alt="Profile"></img>
+                                    </div> 
+                                </div>
+                                <div class="profile-container2">
+                                    <div class="profile-id-display">
+                                    {account.slice(0,6) + '...' + account.slice(38,42)}
+                                    </div>
+
+                                    <div class="profile-button" onClick={togglePop2}>
+                                        Create a Listing
+                                    </div>
+
+                                    <div class="profile-button" onClick={() => ordersPageStart(true)}>
+                                        Orders Received
+                                    </div>
+
+                                    <div class="profile-button" onClick={disconnectWallet}>
+                                        Disconnect Wallet
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+
+                        {!ordersPage ?(
+                            <div class="grid-container">
+                                {items2 &&(
+                                    <>
+                                        {items2.map((item, i) => (
+                                            <>
+                                            <li class="listing-container" key={i} onClick={() => togglePop(item)}>
+                                                <div class="item-image2" id="item-image2">
+                                                    <img src={item.image} alt="ItemImage"></img>
+                                                </div>
+                                                <a class="listing-links">
+
+                                                    {itemsWithOrders[i] && account != item.owner &&(
+                                                        <>
+                                                            <strong class="listing-price-container">Order Placed</strong>
+                                                        </>
+                                                    )}
+
+                                                    <a class="listing-links2">
+                                                        <strong>{item.name}</strong>
+                                                        <p>{item.category}</p>
+                                                        {account != null && item.owner == account.toString() ?(
+                                                            <>
+                                                                <strong class="listing2-price-container">Listed by You</strong>
+                                                            </>
+                                                        ):(
+                                                            <>
+                                                            <strong class="listing-price-container">{ethers.utils.formatUnits(item.price.toString(),'ether')} ETH</strong>
+                                                            </>
+                                                        )}
+                                                    </a>
+                                                </a>
+                                            </li>
+                                            </>
+                                        ))}
+                                    </>
+                                )}
+                                
+                                {itemsExtra &&(
+                                    <>
+                                    {itemsExtra.map((item, i) => (
                                         <>
-                                        <li class="listing-container" key={i} onClick={() => togglePop(item)}>
-                                            <div class="item-image2" id="item-image2">
-                                                <img src={item.image} alt="ItemImage"></img>
-                                            </div>
-                                            <a class="listing-links">
-                                                <a class="listing-links2">
-                                                <strong>{item.name}</strong>
-                                                {account != null && item.owner == account.toString() ?(
+                                        <div key={i} class="listing-container" style={{background: '#E2E2E2'}}></div>
+                                        </>
+                                    ))}
+                                    </>
+                                )}
+                            
+                            
+                            </div>
+                        ):(
+                            <div class="order-container">
+                                {allOrders &&(
+                                    <>
+                                        {allOrders.map((order, i) => (
+                                        <>
+                                            <div class="order-button" key={i} onClick={() => startOrder(true, order)}>
+                                            
+                                                <p>Order for : 
+                                                    <strong>{((order.item).name).toString()}</strong>
+                                                </p>
+                                                <p>Ordered : 
+                                                        {new Date(Number(order.time.toString() + '000')).toLocaleDateString(
+                                                            undefined,
+                                                            {
+                                                            day: '2-digit',
+                                                            month: '2-digit',
+                                                            year: 'numeric',
+                                                            hour: 'numeric',
+                                                            minute: 'numeric',
+                                                            second: 'numeric',
+                                                            hour12: false
+                                                            }
+                                                        )}
+                                                </p>
+                                                <p>Order Placed by: 
+                                                    {(order.buyer).toString()}
+                                                </p>
+                                                {(order.complete).toString() == "1" ?(
                                                     <>
-                                                        <strong class="listing-price-container">Listed by You</strong>
+                                                        <strong class="order-status-container" style={{background:"#006AFF", color:"#FFFFFF", border: "2px solid #006AFF"}}>UNCOMPLETED</strong>
                                                     </>
                                                 ):(
                                                     <>
-                                                    <strong class="listing-price-container">{ethers.utils.formatUnits(item.price.toString(),'ether')} ETH</strong>
+                                                        <strong class="order-status-container" >COMPLETED</strong>
                                                     </>
                                                 )}
-                                                </a>
-                                            </a>
-                                        </li>
+                                                
+                                            </div>
                                         </>
-                                    ))}
-                                </>
-                            )}
-                            
-                            {itemsExtra &&(
-                                <>
-                                {itemsExtra.map((item, i) => (
-                                    <>
-                                    <div key={i} class="listing-container" style={{background: '#E2E2E2'}}></div>
+                                        ))}
                                     </>
-                                ))}
-                                </>
-                            )}
-                        
-                        
-                        </div>
+                                )}
+                            </div>
+                        )}
 
                     </div>
                 </div>
             </div>
+
+            {startOrderPage &&(
+                <div class="itemPage">
+                    <div class="item-details" style={{ "max-width":"800px", height: "20%", top: "100px"}}>
+
+                    <p>Complete Sale to</p>
+
+                    <strong>{(order.buyer).toString()}</strong>
+
+                    <div class="item-text-box2-files">
+                        
+                        Data-
+
+                        <input type="file" id="file-selector2" accept="text/*" />
+                        <label htmlFor="file-selector" class="button"></label>
+
+                    </div>
+
+                        
+                    <button class="profile-button" onClick={() => acceptOrder(order.buyer)}>Complete Order</button>
+                    <button class="profile-button" onClick={() => startOrder(false, account)}>Return to Product page</button>
+
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }

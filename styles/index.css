@@ -6,13 +6,14 @@
   }
   
   .navbar {
-    background: rgb(46, 46, 46);
+    background: rgb(22, 31, 43);
     height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1.2rem;
     position: sticky;
+    margin-top:60px;
     top: 0;
     z-index: 999;
   }
@@ -339,7 +340,7 @@
   }
 
   .filter-container{
-    margin-top: 8vh;
+    margin-top: 2vh;
     left: 1%;
     width: 13%;
     justify-content: left;
@@ -468,7 +469,7 @@
   }
 
   .profile-container{
-    margin-top: 8vh;
+    margin-top: 2vh;
     right: 1%;
     padding: 20px;
     width: 13%;
@@ -561,8 +562,46 @@
   flex-direction: row;
   justify-content: left;
   margin: 0 auto;
-  top:8vh;
+  top:2vh;
   width: 70%;
+  max-width: 1800px;
+  min-height: 500px;
+  color: rgba(0,0,0,0);
+  background: rgba(255, 255, 255, 1);
+  border-radius: 0px;
+  position: relative;
+}
+
+.order-button{
+  margin-top:5px;
+  width: 80%;
+  left: 10%;
+  justify-content: left;
+  align-items: left;
+  padding: 10px;
+  text-align: left;
+  font-size: 1.2rem;
+  padding-left: 30px;
+  color: rgb(43, 43, 43);
+  background: rgb(255, 255, 255);
+  border: 2px solid rgb(190, 190, 190);
+  border-radius: 8px;
+  position: relative;
+}
+.order-button:hover {
+  border: 4px solid rgb(0, 110, 255);
+}
+
+.order-container {
+  padding: 20px 20px 20px 20px;
+  display: flex; 
+  flex-wrap: wrap; 
+  flex-direction: column;
+  justify-content: left;
+  margin: 0 auto;
+  top:2vh;
+  width: 70%;
+  min-height: 1000px;
   max-width: 1800px;
   color: rgba(0,0,0,0);
   background: rgba(255, 255, 255, 1);
@@ -636,7 +675,7 @@
   color: #000000;
   display:flex;
   flex-direction: column;
-  height: 30%;
+  height: 33%;
   width: 100%;
   border-radius: 0px;
   border: 0px solid rgb(46, 46, 46);
@@ -672,6 +711,54 @@
   color: rgb(61, 61, 61);
   position: relative;
 }
+.order-status-container{
+  margin-top:5px;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+  max-width: 50%;
+  display: inline-block;
+  justify-content: left;
+  text-align: center;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  background: rgb(255, 255, 255);
+  border: 2px solid rgb(148, 148, 148);
+  color: rgb(148, 148, 148);
+  position: relative;
+}
+.listing2-price-container{
+  margin-top:5px;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+  max-width: 50%;
+  display: inline-block;
+  justify-content: left;
+  text-align: center;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  background: rgb(203, 91, 255);
+  border: 2px solid rgb(187, 70, 255);
+  color: rgb(255, 255, 255);
+  position: relative;
+}
+.listing3-price-container{
+  margin-top:30px;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+  max-width: 90%;
+  display: inline-block;
+  justify-content: left;
+  text-align: center;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  background: rgb(203, 91, 255);
+  border: 2px solid rgb(187, 70, 255);
+  color: rgb(255, 255, 255);
+  position: relative;
+}
 .listing-links:hover > .listing-links2 {
   color: #464646;
 transition: all 0.5s ease;
@@ -682,29 +769,38 @@ transition: all 0.5s ease;
   border: 1px solid rgb(161, 161, 161);
 transition: all 0.5s ease;
 }
-.listing-links:hover .listing-price-container {
+.listing-links:hover .listing-price-container{
   background: rgb(33, 129, 255);
   border: 2px solid rgb(33, 129, 255);
   color: rgb(255, 255, 255);
 transition: all 0.5s ease;
 }
-
-
-
+.listing-links:hover .listing2-price-container{
+  background: rgb(33, 129, 255);
+  border: 2px solid rgb(33, 129, 255);
+  color: rgb(255, 255, 255);
+transition: all 0.5s ease;
+}
+.listing-links:hover .listing3-price-container{
+  background: rgb(33, 129, 255);
+  border: 2px solid rgb(33, 129, 255);
+  color: rgb(255, 255, 255);
+transition: all 0.5s ease;
+}
 .itemPage {
   position: absolute;
-  top:100px;
+  top:0px;
   width: 100vw;
   height: 2000px;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to top, rgba(23, 0, 32,1) 0%, rgba(0, 4, 43, 1) 100%);
+  background: linear-gradient(to top, rgb(22, 31, 43) 50%,rgb(44, 100, 255)100%);
 
 }
 
 .item-details {
   margin: 0 auto;
-  top:30px;
+  top:50px;
   height: 90%;
   width: 80%;
   max-width:1200px;

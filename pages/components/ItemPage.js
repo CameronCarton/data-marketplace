@@ -1,6 +1,5 @@
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-import { create } from 'ipfs-http-client'
 import Papa from 'papaparse';
 import { saveAs } from 'file-saver';
 
@@ -15,7 +14,6 @@ import Paper from '@mui/material/Paper';
 const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
     const [order,setOrder] = useState(null);
-    const [allOrders,setAllOrders] = useState(null);
     const [hasBought,setHasBought] = useState(false);
     const [isOwner,setIsOwner] = useState(false);
     const [hasDownloaded,setHasDownloaded] = useState("Download");
@@ -23,39 +21,7 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
     const [columns, setColumns] = useState();
     const [data, setData] = useState();
     const [startBuyPage, setStartBuyPage] = useState(false);
-    const [startOrderPage, setStartOrderPage] = useState(false);
     const [startDownloadPage, setStartDownloadPage] = useState(false);
-    const [order_buyer, setOrder_buyer] = useState(false);
-
-
-    //ipfs
-    const projectId = "2M3RsTdrt2xMd2SUInpHJf7JDlh";
-    const projectSecret = "37549890a23ea362509f8517bf1bc14c";
-    const authorization = "Basic " + btoa(projectId + ":" + projectSecret);
-    const ipfs = create({
-      url: "https://ipfs.infura.io:5001/api/v0",
-      headers:{
-        authorization
-      }
-    })
-
-
-
-    //ipfs upload
-    const uploadFileToIPFS = async (file, type) => {
-
-      //upload
-      console.log("Beginning Upload to IPFS...")
-      const fileLink = await ipfs.add(file);
-
-      //image files
-      if(type==1)
-      return "https://ipfs.io/ipfs/"+fileLink.path;
-
-      //data files
-      if(type==2)
-      return fileLink.path;
-    };
 
 
 
@@ -131,82 +97,6 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
         }
 
       }
-
-    }
-
-
-
-    //When Seller Accepts Order
-    const acceptOrder = async (buyer) => {
-
-      //Retrieve Input Data File (to send to buyer)
-      const fileSelector2 = document.getElementById('file-selector2');
-      const file2 = fileSelector2.files[0];
-      const reader = new FileReader();
-      
-  
-      //Reading in File and Completing Sale
-      reader.addEventListener('load', async (event) => {
-
-        //Converting file to JSON
-        const csv = Papa.parse(event.target.result, { header: true });
-        const dataFile = JSON.stringify(csv);
-
-
-
-        // Diffie Hellman Key Exchange
-        const crypto = require('crypto');
-
-        //Getting Prime and Generator from modp15
-        const seller_key = crypto.getDiffieHellman('modp15');
-        seller_key.generateKeys();
-        const gs_key = seller_key.getPublicKey('hex');
-        
-        //Retrieving Buyer Public key stored in Order
-        const gb = order.gb;
-
-        //Creating the main Secret Key (Symmetric Key for Encrypting and Decrypting)
-        const secretKey = seller_key.computeSecret(Buffer.from(gb, 'hex'),null,'hex');
-
-        //Decodes SecretKey from a Uint8Array to Hexadecimal
-        const secretDecode = new TextDecoder('utf8').decode(secretKey);
-
-
-
-        //Encrypting Data with AES (using Secret Key)
-        var AES = require("crypto-js/aes");
-        const data = AES.encrypt(
-          dataFile,
-          secretDecode);
-
-          
-
-        //Uploading Encrypted Data to IPFS
-        const dataLink = await uploadFileToIPFS(data.toString(),2)
-        console.log("Data File uploaded at: https://ipfs.io/ipfs/" + dataLink);
-
-
-        //Completing transaction with Smart Contract
-        const accountAddress = ethers.utils.getAddress(account);
-        const buyerAddress = ethers.utils.getAddress(buyer);
-        const completed = 2;
-        const dataLocation = dataLink;
-        const itemID = parseInt(item.id);
-
-        //Seller public key (gs_key) is stored in Smart Contract
-        const signer = await provider.getSigner();
-        let transaction = dataMarket.connect(signer).setOrderComplete(buyerAddress, 
-                                                                      order.id,
-                                                                      itemID, 
-                                                                      completed, 
-                                                                      gs_key, 
-                                                                      dataLocation);
-        await transaction;
-
-      });
-
-      //reads in file
-      reader.readAsText(await file2);
 
     }
 
@@ -374,23 +264,16 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
 
   //Start Buy Menu
-  const startBuy = async (bool) => {
+  const startBuy = (bool) => {
+    window.scrollTo(0, 0);
     setStartBuyPage(bool);
   }
 
 
 
-    //Start Order Menu
-    const startOrder = async (bool, buyer_order) => {
-      setOrder_buyer(buyer_order.buyer);
-      setOrder(buyer_order);
-      setStartOrderPage(bool);
-    }
-
-
-
     //Start Download Menu
-    const startDownload = async (bool) => {
+    const startDownload = (bool) => {
+      window.scrollTo(0, 0);
       setStartDownloadPage(bool);
     }
 
@@ -546,19 +429,9 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
             <div class="item-text-box-files" style={{ height: '10%', width: "60%", left: "70px"}}>
               <div class="item-text-box2-info" style={{ display: "inline-block"}}>
 
-                Orders
+                Reviews
 
-                {allOrders &&(
-                  <>
-                    {allOrders.map((order, i) => (
-                      <>
-                        <div class="profile-button" key={i} onClick={() => startOrder(true, order)}>
-                          <strong>{(order.buyer).toString()}</strong>
-                        </div>
-                      </>
-                    ))}
-                  </>
-                )}
+                
 
               </div>
             </div>
@@ -580,33 +453,6 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
               <button class="profile-button" onClick={buyItem}>Proceed to Payment</button>
               <button class="profile-button" onClick={() => startBuy(false)}>Return to Product page</button>
-
-            </div>
-          </div>
-        )}
-
-
-
-        {startOrderPage &&(
-          <div class="itemPage">
-            <div class="item-details" style={{ "max-width":"800px", height: "20%", top: "100px"}}>
-
-              <p>Complete Sale to</p>
-
-              <strong>{(item.owner).toString()}</strong>
-
-              <div class="item-text-box2-files">
-                
-                Data-
-
-                <input type="file" id="file-selector2" accept="text/*" />
-                <label htmlFor="file-selector" class="button"></label>
-
-              </div>
-
-                
-              <button class="profile-button" onClick={() => acceptOrder(order_buyer)}>Complete Order</button>
-              <button class="profile-button" onClick={() => startOrder(false, account)}>Return to Product page</button>
 
             </div>
           </div>

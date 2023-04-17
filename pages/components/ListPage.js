@@ -14,7 +14,7 @@ import Paper from '@mui/material/Paper';
 
 
 
-const ListPage = ({ items, provider, account, dataMarket, togglePop2 }) => {
+const ListPage = ({provider, account, dataMarket, togglePop2 }) => {
 
 
     const [price, setPrice] = useState(0.0000);

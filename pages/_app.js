@@ -25,11 +25,13 @@ function App() {
 
   //selects item
   const togglePop = async (item) => {
+    window.scrollTo(0, 0);
     setItem(item)
     toggle ? setToggle(false) : setToggle(true)
     console.log("Loaded Item Page.")
   }
   function togglePop2 (){
+    window.scrollTo(0, 0);
     toggle2 ? setToggle2(false) : setToggle2(true)
     console.log("Loaded Item Listing Page.")
   }
@@ -72,15 +74,14 @@ function App() {
 
   return (
     <div>
-      <Navigation account={account} setAccount={setAccount}/>
-      <Section account={account} items={items} dataMarket={dataMarket} togglePop={togglePop} togglePop2={togglePop2}/>
+      <Section account={account} provider={provider} items={items} dataMarket={dataMarket} togglePop={togglePop} togglePop2={togglePop2} toggle = {toggle} toggle2 = {toggle2} setAccount={setAccount}/>
 
       {toggle &&(
         <ItemPage item={item} provider={provider} account={account} dataMarket={dataMarket} togglePop={togglePop} />
       )}
 
       {toggle2 &&(
-        <ListPage items={items} provider={provider} account={account} dataMarket={dataMarket} togglePop2={togglePop2} />
+        <ListPage provider={provider} account={account} dataMarket={dataMarket} togglePop2={togglePop2} />
       )}
     </div>
   );

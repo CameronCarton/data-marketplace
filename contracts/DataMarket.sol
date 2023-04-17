@@ -48,6 +48,7 @@ contract DataMarket{
 
     mapping(uint256 => Item)public items;
     mapping(address => mapping(uint256 => Order)) public orders;
+    mapping(uint256 => mapping(address => uint256)) public ordersFulfilled;
     mapping(address => uint256)public userOrders;
 
     event ListItem(address owner, uint256 itemId, string name, uint256 price);
@@ -99,7 +100,7 @@ contract DataMarket{
 
         //save order
         orders[address(item.owner)][newOrderAmount] = order;
-
+        ordersFulfilled[item.id][msg.sender] = 1;
     }
 
 
@@ -120,6 +121,9 @@ contract DataMarket{
         order.complete = _complete;
         order.gs = _gs;
         order.data = _data;
+
+        //change order to fulfilled
+        ordersFulfilled[_id][_buyer] = 2;
 
         emit OrderCompleted(msg.sender, _buyer, _id);
     }
