@@ -594,6 +594,12 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
                                                                 </>
                                                             )}
                                                         </a>
+                                                        
+                                                        {item.stars >= 1 && item.stars < 1.5 &&(<div class= "stars-container">{"    *"}</div>)}
+                                                        {item.stars >= 1.5 && item.stars < 2.5 &&(<div class= "stars-container">{"   **"}</div>)}
+                                                        {item.stars >= 2.5 && item.stars < 3.5 &&(<div class= "stars-container">{"  ***"}</div>)}
+                                                        {item.stars >= 3.5 && item.stars < 4.5 &&(<div class= "stars-container">{" ****"}</div>)}
+                                                        {item.stars >= 4.5 && item.stars <= 5 &&(<div class= "stars-container">{"*****"}</div>)}
                                                     </a>
                                                 </li>
                                                 </>

@@ -22,8 +22,10 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
     const [data, setData] = useState();
     const [startBuyPage, setStartBuyPage] = useState(false);
     const [startDownloadPage, setStartDownloadPage] = useState(false);
-
-
+    const [reviewPage, setReviewPage] = useState(false);
+    const [reviews, setReviews] = useState([]);
+    const [price, setPrice] = useState(5);
+    const [ inputReviewText, setInputReviewText] = useState(null);
 
     //Necessary Details for order and item
     const fetchDetails = async () => {
@@ -81,7 +83,29 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
       }
 
+
+      //fetch reviews for item
+      const reviews = [];
+      const itemReviewAmount = await dataMarket.itemReviewAmount(item.id);
+
+      for (var i=1; i<=itemReviewAmount; i++){
+        const review_ = await dataMarket.reviews(item.id,i);
+        reviews.push(review_);
+      }
+      setReviews(reviews);
+      console.log(reviews);
+
     }
+
+
+
+    //Star rating input
+    const handlePriceChange = (event) => {
+      const inputValue = parseFloat(event.target.value);
+      if (!isNaN(inputValue)) {
+          setPrice(inputValue);
+      }
+    };
 
 
 
@@ -254,8 +278,32 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
     const deleteListing = async () => {
       const signer = await provider.getSigner();
       let transaction = dataMarket.connect(signer).deleteItem(item.id);
-      const trans = await transaction;
+      await transaction;
       togglePop();
+    }
+
+
+
+    //Post Review
+    const postReview = async () => {
+      try{
+      //List item in Smart contract
+      console.log(parseInt(item.id));
+      console.log(parseInt(order.id));
+      console.log(parseInt(price));
+      console.log(inputReviewText.toString());
+      const signer = await provider.getSigner()
+      const transaction = await dataMarket.connect(signer).postReview(
+        parseInt(item.id),
+        parseInt(order.id),
+        parseInt(price),
+        inputReviewText.toString()
+      )
+      await transaction.wait()
+      console.log("REVIEW POSTED!");
+      }catch(err){
+        console.log("REVIEW DENIED!");
+      }
     }
 
   
@@ -278,6 +326,20 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
     const startDownload = (bool) => {
       window.scrollTo(0, 0);
       setStartDownloadPage(bool);
+    }
+
+
+
+    //handle review text input
+    const reviewTextChange = (event) => {
+      setInputReviewText(event.target.value);
+    }
+
+
+
+    //reviewpage change
+    const setReviewPageVal = () => {
+      reviewPage ? setReviewPage(false) : setReviewPage(true)
     }
 
 
@@ -429,11 +491,51 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
             
 
 
-            <div class="item-text-box-files" style={{ height: '10%', width: "60%", left: "70px"}}>
-              <div class="item-text-box2-info" style={{ display: "inline-block"}}>
-                Reviews
-                
+            <div class="item-text-box-files" style={{ height: '10%', width: "55%", left: "60px",top:"-80px"}}>
+              <div class="profile-button"  style={{top:"30px",left:"150px",width:"30%","z-index":"5"}} onClick={setReviewPageVal}>Write a Review</div>
+              <div class="item-text-box2-info" style={{ display: "inline-block","height":"340px","max-height":"340px",overflow: 'scroll'}}>
+                <p>Reviews</p>
+                <br/>
+                <p></p>
+                {reviewPage ?(
+                  <div>
+                  Star Rating
+                  <input
+                          class="item-text-box-price2"
+                          type="number"
+                          step="1"
+                          min="1"
+                          max="5"
+                          value={price}
+                          onChange={handlePriceChange}
+                          style={{width: "10%","margin-left":"110px",top:"40px"}}
+                      />
+                    <textarea class="item-text-box-info" onChange={reviewTextChange} rows="2" style={{top:"65px",left:"60px",height:"120px","min-height": "80px","max-height":"120px",width:"90%"}}></textarea>
+                    <div class="profile-button" onClick={postReview} style={{top:"170px",left:"400px",width:"30%"}}>Post Review</div>
+                  </div>
+                ):(
+                  <div >
+                    {reviews &&(
+                      <>
+                        {reviews.map((review, i) => (
+                          <>
+                            <div class="review-container" key={i}> 
+                              {review.stars >= 1 && review.stars < 1.5 &&(<p>{"*"}</p>)}
+                              {review.stars >= 1.5 && review.stars < 2.5 &&(<p>{"**"}</p>)}
+                              {review.stars >= 2.5 && review.stars < 3.5 &&(<p>{"***"}</p>)}
+                              {review.stars >= 3.5 && review.stars < 4.5 &&(<p>{"****"}</p>)}
+                              {review.stars >= 4.5 && review.stars <= 5 &&(<p>{"*****"}</p>)}
 
+                              <p>{"ADDRESS: " + (review.buyer).toString()} </p>
+                              <p>{"REVIEW TEXT: " + (review.text).toString()} </p>
+                            </div>
+                          </>
+                        ))}
+                      </>
+                    )}
+                  </div>
+                )}
+                
                 
 
               </div>

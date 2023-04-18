@@ -27,12 +27,12 @@ function App() {
   const togglePop = async (item) => {
     window.scrollTo(0, 0);
     setItem(item)
-    toggle ? setToggle(false) : setToggle(true)
+    toggle ? setToggle(false) : setToggle(true);
     console.log("Loaded Item Page.")
   }
   function togglePop2 (){
     window.scrollTo(0, 0);
-    toggle2 ? setToggle2(false) : setToggle2(true)
+    toggle2 ? setToggle2(false) : setToggle2(true);
     console.log("Loaded Item Listing Page.")
   }
 

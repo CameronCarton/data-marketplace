@@ -59,6 +59,11 @@ contract DataMarket{
         _;
     }
 
+    modifier canPostReview(address owner,uint256 _order, address _buyer) {
+        require(orders[owner][_order].buyer == _buyer, "Order does Not Exist.");
+        _;
+    }
+
     modifier starsValid(uint256 _stars) {
         require(_stars >= 1 && _stars <= 5, "Stars given are not valid.");
         _;
@@ -146,7 +151,7 @@ contract DataMarket{
         uint256 _order,
         uint256 _stars,
         string memory _text
-    ) public notOwner(_id) orderExists(_order,msg.sender) starsValid(_stars){
+    ) public notOwner(_id) canPostReview(items[_id].owner,_order,msg.sender) starsValid(_stars){
 
         //increment amount of reviews for item
         uint256 newReviewAmount = itemReviewAmount[_id] + 1;
