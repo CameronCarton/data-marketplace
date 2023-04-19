@@ -18,6 +18,7 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
     const [isOwner,setIsOwner] = useState(false);
     const [hasDownloaded,setHasDownloaded] = useState("Download");
     const [dataSample, setDataSample] = useState(null);
+    const [dataLength, setDataLength] = useState(0);
     const [columns, setColumns] = useState();
     const [data, setData] = useState();
     const [startBuyPage, setStartBuyPage] = useState(false);
@@ -37,10 +38,14 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
       .then(response => response.text())
       .then(async (data) => {
 
-        setDataSample(data);
+        const _data = JSON.parse(data);
 
+        const sampledData = _data.first10;
+
+        setDataSample(sampledData);
+        setDataLength(_data.dataLength);
         //Converting data retrieved to a usable form to display
-        const jsonData = Papa.unparse(data);
+        const jsonData = Papa.unparse(sampledData);
         const parsed = Papa.parse(jsonData)
         const data_ = parsed.data;
         const columns = Object.keys(parsed.data[0]);
@@ -428,6 +433,11 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
                 <div class="item-text-box2">
                   <p>Category : </p>
                   <p>{item.category}</p>
+                </div>
+
+                <div class="item-text-box2">
+                  <p>Number of Rows : </p>
+                  <p>{dataLength.toString()}</p>
                 </div>
 
               </div>

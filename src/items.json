@@ -7,7 +7,7 @@
         "price": "0.2",
         "information": "this is default information",
         "tags": "earthquake, seismic activity, geology, natural disasters, disaster response, earthquake prediction, seismic waves, plate tectonics, earthquake data, earthquake patterns",
-        "dataSample": "QmcagufavPVBe2upFmEVHoMfb1RRvqVLYLyWvJJM3KPUzx"
+        "dataSample": "QmcpXh7gc9eGc21JsW3FRYgEAvw5DBvBN6Ya2mL962toFZ"
       },
       {
         "name": "Gaming Console Popularity",
@@ -16,7 +16,7 @@
         "price": "3.14",
         "information": "this is default information",
         "tags": "gaming, gaming consoles, market analysis, consumer behavior, sales figures, market share, data-driven decisions, popularity, age groups, regions, industry insights",
-        "dataSample": "QmZGsuc7EpmV81eVbA6Y4s2QdWVZbHXquSYCMLFGAuHaAQ"
+        "dataSample": "QmWQBKwRQ9B9uQVAfhTPzPFEproE5W6MZnWgCAqVpjDiGR"
       },
       {
         "name": "Honda Sales Information",
@@ -25,7 +25,7 @@
         "price": "9",
         "information": "this is default information",
         "tags": "Honda, automotive industry, sales data, vehicle models, market share, consumer behavior, revenue, regional sales, time-series analysis, data-driven decisions, industry insights",
-        "dataSample": "QmX6PT1SZGG9PQHW4CCJKWAzhjAKxp2U45tjveArD2Pbsx"
+        "dataSample": "QmYemdCaPvLgi3op2uAQgxXEwoy5iqAZkjdz9wvFi1XmQZ"
       },
       {
         "name": "AACG Stock Price",
@@ -34,7 +34,7 @@
         "price": "0.006",
         "information": "this is default information",
         "tags": "NASDAQ, stock market, financial data, trading, market analysis, time-series analysis, stock prices, market trends",
-        "dataSample": "QmT49vk3TwYDMQQ3ZbQuLFS5skJdyHx2esnJjEWU4uax7Q"
+        "dataSample": "QmbuXLRRLH73dZPQqZsCqFNfk5CjMBHHYYgx8HxJiLeokQ"
       }
       ,
       {
@@ -44,7 +44,7 @@
         "price": "0.7765",
         "information": "this is default information",
         "tags": "NASDAQ, stock market, financial data, trading, market analysis, time-series analysis, stock prices, market trends",
-        "dataSample": "QmVsaa86QpzuVtFWwAdpdrza8vcnnM5zkdL6z6SabWutJo"
+        "dataSample": "QmfQnhNHsKbj3w4qiMyHrkkR3mTVZKp99R3k2nz3DmcL6L"
       },
       {
         "name": "NBA game Data",
@@ -53,16 +53,16 @@
         "price": "6",
         "information": "this is default information",
         "tags": "nba, athlete, health, fitness, human",
-        "dataSample": "QmSEDzQZkpRvH2cBj3NfQ94PvakdXhVhZt7aRdLkuQwejY"
+        "dataSample": "QmW9R48a7QEPq9nP4C3KpG7acntwgLX4oWTM55F9v1RdRF"
       },
       {
-        "name": "Tornada Locations",
+        "name": "Tornado Locations",
         "category": "Environmental",
         "image": "https://ipfs.io/ipfs/QmaSS8v7CHbXSTDg7fJF5dXgeUMKeKDKsnJrrm5r8dZ92n",
         "price": "8",
         "information": "this is default information",
         "tags": "tornado, wind, location, weather",
-        "dataSample": "QmSVfNkaBsUVTCUVmjHYZALYk1atpxw1mHYUygrMExaGrH"
+        "dataSample": "QmdEiEBu8iX8WiLJngEzLKw9h5FXdJqKUeSCddG78qcRzd"
       },
       {
         "name": "Spotify Youtube Dataset",
@@ -71,7 +71,7 @@
         "price": "1.34",
         "information": "this is default information",
         "tags": "youtube, spotify, music",
-        "dataSample": "QmfXYupH2WoWHdJgquJp8jBkKMa5mZUkqvpfKQWMR6RWDt"
+        "dataSample": "QmWHAKzJbJduueTs2L4sNMPvcuCCBThWqvgCqknrTiMHn4"
       }
     ]
   }

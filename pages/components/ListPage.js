@@ -105,8 +105,16 @@ const ListPage = ({provider, account, dataMarket, togglePop2 }) => {
           // Get the first 10 records of the CSV data
           const csvFirst10 = { data: csv.data.slice(0, 10), meta: csv.meta };
 
+          //count how many columns
+          const csvLength = csv.data.length;
+
           //csv to display
-          setCsvDisplay(JSON.stringify(csvFirst10));
+          const csvData = {
+            dataLength: csvLength,
+            first10: csvFirst10
+          };
+          setCsvDisplay(JSON.stringify(csvData));
+
           const data = csvFirst10.data;
           const columns = Object.keys(csvFirst10.data[0]);
           setData(data);
