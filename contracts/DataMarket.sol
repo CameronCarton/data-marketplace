@@ -59,6 +59,11 @@ contract DataMarket{
         _;
     }
 
+    modifier canWithdraw(uint256 _order, address _owner, uint256 _id) {
+        require((orders[_owner][_order].buyer == msg.sender && ordersFulfilled[_id][msg.sender] == 1), "Cannot withdraw order.");
+        _;
+    }
+
     modifier canPostReview(address owner,uint256 _order, address _buyer) {
         require(orders[owner][_order].buyer == _buyer, "Order does Not Exist.");
         _;
@@ -77,6 +82,9 @@ contract DataMarket{
 
     mapping(uint256 => uint256)public itemReviewAmount;
     mapping(uint256 => mapping(uint256 => Review)) public reviews;
+
+
+    mapping(address => mapping(address => mapping(uint256 => uint256))) public balances;
 
     event ListItem(address owner, uint256 itemId, string name, uint256 price);
     event OrderCompleted(address owner, address buyer, uint256 itemId);
@@ -132,8 +140,8 @@ contract DataMarket{
         //ensure enough ether is sent to buy product
         require(msg.value >= item.price);
 
-        //transfer payment
-        payable(address(item.owner)).transfer(item.price);
+        //transfer payment into contract
+        balances[item.owner][msg.sender][_id] += msg.value;
 
         //Create order
         Order memory order = Order(msg.sender, newOrderAmount, block.timestamp, item, 1,_gb,"0","");
@@ -194,10 +202,44 @@ contract DataMarket{
         order.gs = _gs;
         order.data = _data;
 
+        //receive payment (only if it hasnt been taken before)
+        if(ordersFulfilled[_id][_buyer] == 1){
+
+            uint256 balance = balances[msg.sender][_buyer][_id];
+            require(balance > 0, "Order balance is zero.");
+
+            balances[msg.sender][_buyer][_id] = 0;
+
+            (bool success, ) = msg.sender.call{value: balance}("");
+            require(success, "Transaction Failed.");
+        }
+
         //change order to fulfilled
         ordersFulfilled[_id][_buyer] = 2;
 
         emit OrderCompleted(msg.sender, _buyer, _id);
+    }
+
+
+
+    //withdraw order
+    function withdrawOrder(
+        uint256 _order,
+        address _owner,
+        uint256 _id
+    )public canWithdraw(_order,_owner,_id){
+
+        ordersFulfilled[_id][msg.sender] = 0;
+        orders[_owner][_order].complete = 0;
+
+        //withdraw payment
+        uint256 balance = balances[_owner][msg.sender][_id];
+        require(balance > 0, "Order balance is zero.");
+
+        balances[_owner][msg.sender][_id] = 0;
+
+        (bool success, ) = msg.sender.call{value: balance}("");
+        require(success, "Transaction Failed.");
     }
 
 }

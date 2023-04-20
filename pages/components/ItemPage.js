@@ -80,7 +80,7 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
           const order_item = order_.item;
 
           //Order completed is 2 if the order exists and is fulfilled
-          if((order_item.id).toString() == (item.id).toString() && order_.buyer == account && (completed).toString()=="2"){
+          if((order_item.id).toString() == (item.id).toString() && order_.buyer == account && ((completed).toString()=="1" || (completed).toString()=="2")){
             setOrder(order_);
             break;
           }
@@ -146,6 +146,23 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
 
       setHasBought(true);
       togglePop();
+      }catch(err){
+        console.log("TRANSACTION DENIED!")
+      }
+    }
+
+
+
+    //withdraw payment (cancel order)
+    const withdrawPayment = async () => {
+
+      try{
+      //withdraw ETH from order (cancel order)
+      const signer = await provider.getSigner();
+      let transaction = dataMarket.connect(signer).withdrawOrder(order.id,item.owner,item.id);
+      const trans = await transaction;
+      console.log("ORDER CANCELLED!");
+
       }catch(err){
         console.log("TRANSACTION DENIED!")
       }
@@ -356,7 +373,7 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
             <button class="close" onClick={togglePop}>x</button>
 
             <div class="item-order">
-              {order && !isOwner ?(
+              {order && order.complete==2 && !isOwner ?(
 
                 <div> 
                   <div class="item-order2">
@@ -381,16 +398,46 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
                   </div>
                     
                 ):(
-                  <div> 
-                    <div class="item-order2">
-                      Product Price: <br />
-                      <strong>
-                        {ethers.utils.formatUnits(item.price.toString(), 'ether')} ETH
-                      </strong>     
-                    </div>
+                  <>
+                    {order && order.complete==1 ?(
+                      <>
+                      <div> 
+                        <div class="item-order2">
+                          You have an Active Order: <br />  
+                          <strong>
+                              {new Date(Number(order.time.toString() + '000')).toLocaleDateString(
+                                undefined,
+                                {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric',
+                                  weekday: 'long',
+                                  hour: 'numeric',
+                                  minute: 'numeric',
+                                  hour12: false
+                                }
+                              )}
+                            </strong>
+                        </div>
 
-                    <button class="item-buy" onClick={() => startBuy(true)}>Buy Now</button>
-                  </div>
+                        <button class="item-buy" onClick={withdrawPayment}>Cancel Order</button>
+                      </div>
+                      </>
+                    ):(
+                      <>
+                        <div> 
+                          <div class="item-order2">
+                            Product Price: <br />
+                            <strong>
+                              {ethers.utils.formatUnits(item.price.toString(), 'ether')} ETH
+                            </strong>     
+                          </div>
+
+                          <button class="item-buy" onClick={() => startBuy(true)}>Buy Now</button>
+                        </div>
+                      </>
+                    )}
+                  </>
                 )}
 
 
