@@ -324,7 +324,6 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
     
             //Completing transaction with Smart Contract
             const buyerAddress = ethers.utils.getAddress(buyer);
-            const completed = 2;
             const dataLocation = dataLink;
             const itemID = parseInt((order.item).id);
     
@@ -333,7 +332,6 @@ const Section = ({account, provider, items, dataMarket, togglePop, togglePop2, t
             let transaction = dataMarket.connect(signer).setOrderComplete(buyerAddress, 
                                                                             order.id,
                                                                             itemID, 
-                                                                            completed, 
                                                                             gs_key, 
                                                                             dataLocation);
             await transaction;

@@ -102,8 +102,11 @@ const ListPage = ({provider, account, dataMarket, togglePop2 }) => {
           const csvString = JSON.stringify(csv);
           setDataFile(csvString);
 
-          // Get the first 10 records of the CSV data
-          const csvFirst10 = { data: csv.data.slice(0, 10), meta: csv.meta };
+          // Get 10 random records from the CSV data
+          const csvRandom10 = { 
+            data: csv.data.sort(() => Math.random() - 0.5).slice(0, 10), 
+            meta: csv.meta 
+          };
 
           //count how many columns
           const csvLength = csv.data.length;
@@ -111,12 +114,12 @@ const ListPage = ({provider, account, dataMarket, togglePop2 }) => {
           //csv to display
           const csvData = {
             dataLength: csvLength,
-            first10: csvFirst10
+            first10: csvRandom10
           };
           setCsvDisplay(JSON.stringify(csvData));
 
-          const data = csvFirst10.data;
-          const columns = Object.keys(csvFirst10.data[0]);
+          const data = csvRandom10.data;
+          const columns = Object.keys(csvRandom10.data[0]);
           setData(data);
           setColumns(columns);
 
@@ -169,7 +172,6 @@ const ListPage = ({provider, account, dataMarket, togglePop2 }) => {
       //List item in Smart contract
       const signer = await provider.getSigner()
       const transaction = await dataMarket.connect(signer).list(
-        account,
         inputName,
         imageLink,
         selectedCategory,

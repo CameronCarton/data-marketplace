@@ -111,6 +111,30 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "buyerReviewIds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "_itemId",
         "type": "uint256"
       }
@@ -176,7 +200,7 @@
     "name": "items",
     "outputs": [
       {
-        "internalType": "address payable",
+        "internalType": "address",
         "name": "owner",
         "type": "address"
       },
@@ -231,11 +255,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address payable",
-        "name": "_owner",
-        "type": "address"
-      },
       {
         "internalType": "string",
         "name": "_name",
@@ -310,7 +329,7 @@
       {
         "components": [
           {
-            "internalType": "address payable",
+            "internalType": "address",
             "name": "owner",
             "type": "address"
           },
@@ -494,11 +513,6 @@
       {
         "internalType": "uint256",
         "name": "_id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_complete",
         "type": "uint256"
       },
       {

@@ -14,7 +14,7 @@ contract DataMarket{
     }
 
     struct Item {
-        address payable owner;
+        address owner;
         uint256 id;
         string name;
         string image;
@@ -82,7 +82,7 @@ contract DataMarket{
 
     mapping(uint256 => uint256)public itemReviewAmount;
     mapping(uint256 => mapping(uint256 => Review)) public reviews;
-
+    mapping(uint256 => mapping(address => uint256)) public buyerReviewIds;
 
     mapping(address => mapping(address => mapping(uint256 => uint256))) public balances;
 
@@ -91,7 +91,6 @@ contract DataMarket{
 
 
     function list(
-        address payable _owner,
         string memory _name,
         string memory _image,
         string memory _category,
@@ -101,7 +100,7 @@ contract DataMarket{
         string memory _dataSample
     ) public {
         //create Item
-        Item memory item = Item(_owner,itemId,_name,_image,_category,_price,_information,_tags,_dataSample,0);
+        Item memory item = Item(msg.sender,itemId,_name,_image,_category,_price,_information,_tags,_dataSample,0);
 
         //save Item
         items[itemId] = item;
@@ -161,10 +160,21 @@ contract DataMarket{
         string memory _text
     ) public notOwner(_id) canPostReview(items[_id].owner,_order,msg.sender) starsValid(_stars){
 
-        //increment amount of reviews for item
-        uint256 newReviewAmount = itemReviewAmount[_id] + 1;
-        itemReviewAmount[_id] = newReviewAmount;
+        uint256 newReviewAmount = 0;
 
+        //check if buyer already has a review
+        if(buyerReviewIds[_id][msg.sender]==0){
+            
+            //increment amount of reviews for item
+            newReviewAmount = itemReviewAmount[_id] + 1;
+            itemReviewAmount[_id] = newReviewAmount;
+
+            //set buyers review id
+            buyerReviewIds[_id][msg.sender]=newReviewAmount;
+
+        }else{
+            newReviewAmount = buyerReviewIds[_id][msg.sender];
+        }
 
         //create Review
         Review memory review = Review(msg.sender,_id,_stars,_text);
@@ -190,17 +200,12 @@ contract DataMarket{
             address _buyer, 
             uint256 _order,
             uint256 _id, 
-            uint256 _complete, 
             string memory _gs, 
             string memory _data
     ) public onlyOwner(_id) orderExists(_order,_buyer){
 
         //get order
         Order storage order = orders[msg.sender][_order];
-
-        order.complete = _complete;
-        order.gs = _gs;
-        order.data = _data;
 
         //receive payment (only if it hasnt been taken before)
         if(ordersFulfilled[_id][_buyer] == 1){
@@ -216,6 +221,10 @@ contract DataMarket{
 
         //change order to fulfilled
         ordersFulfilled[_id][_buyer] = 2;
+
+        order.complete = 2;
+        order.gs = _gs;
+        order.data = _data;
 
         emit OrderCompleted(msg.sender, _buyer, _id);
     }

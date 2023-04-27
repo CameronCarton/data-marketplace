@@ -28,7 +28,6 @@ async function main() {
   //This is so I don't have to manually list a load of sales myself
   for (let i = 0; i < items.length; i++){
     const transaction = await dataMarket.connect(seller).list(
-      seller.address,
       items[i].name,
       items[i].image,
       items[i].category,
