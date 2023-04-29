@@ -471,6 +471,10 @@ const ItemPage = ({item, provider, account, dataMarket, togglePop}) => {
                   {item.name}
                 </div>
 
+                <div class="item-text-box2">
+                  <p>Star Rating : </p>
+                  <p>{(item.stars).toString()}</p>
+                </div>
 
                 <div class="item-text-box2">
                   <p>Price : </p>
